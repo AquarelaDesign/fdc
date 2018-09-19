@@ -7,6 +7,6 @@ module.exports = function(server) {
     server.use('/api', router)
 
     // Rotas de Servicos 
-    const BillingCycle = require('../api/fdc/fdcService')
+    const FDC = require('../api/fdc/fdcService')
     FDC.register(router, '/fdcs')
 }
