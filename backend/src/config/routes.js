@@ -8,5 +8,5 @@ module.exports = function(server) {
 
     // Rotas de Servicos 
     const BillingCycle = require('../api/fdc/fdcService')
-    BillingCycle.register(router, '/fdcs')
+    FDC.register(router, '/fdcs')
 }

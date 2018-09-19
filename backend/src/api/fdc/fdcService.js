@@ -4,7 +4,7 @@ const errorHandler = require('../common/errorHandler')
 FDC.methods(['get', 'post', 'put', 'delete'])
 FDC.updateOptions({new: true, runValidators: true})
 FDC.after('post', errorHandler).after('put', errorHandler)
-/*
+
 FDC.route('count', (req, res, next) => {
     FDC.count((error, value) => {
         if(error) {
@@ -14,7 +14,7 @@ FDC.route('count', (req, res, next) => {
         }
     })
 })
-*/
+
 /*
 FDC.route('summary', (req, res, next) => {
     FDC.aggregate({
