@@ -1,12 +1,12 @@
-const FDC = require('./fdc')
-const errorHandler = require('../common/errorHandler')
+const Pas = require('./pas')
+const errorHandler = require('../../common/errorHandler')
 
-FDC.methods(['get', 'post', 'put', 'delete'])
-FDC.updateOptions({new: true, runValidators: true})
-FDC.after('post', errorHandler).after('put', errorHandler)
+Pas.methods(['get', 'post', 'put', 'delete'])
+Pas.updateOptions({new: true, runValidators: true})
+Pas.after('post', errorHandler).after('put', errorHandler)
 
-FDC.route('count', (req, res, next) => {
-    FDC.count((error, value) => {
+Pas.route('count', (req, res, next) => {
+    Pas.count((error, value) => {
         if(error) {
             res.status(500).json({errors: [error]})
         } else {
@@ -16,8 +16,8 @@ FDC.route('count', (req, res, next) => {
 })
 
 /*
-FDC.route('summary', (req, res, next) => {
-    FDC.aggregate({
+Pas.route('summary', (req, res, next) => {
+    Pas.aggregate({
         $project: {credit: {$sum: "$credits.value"}, debt: {$sum: "$debts.value"}}
     }, {
         $group: {_id: null, credit: {$sum: "$credit"}, debt: {$sum: "$debt"}}
@@ -32,4 +32,4 @@ FDC.route('summary', (req, res, next) => {
     })
 })
 */
-module.exports = FDC
+module.exports = Pas
