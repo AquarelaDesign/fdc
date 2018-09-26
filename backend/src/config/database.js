@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
-module.exports = mongoose.connect('mongodb://localhost/fdc', { useNewUrlParser: true })
+//module.exports = mongoose.connect('mongodb://localhost/fdc', { useNewUrlParser: true })
+module.exports = mongoose.connect('mongodb://i-dealers.com:27017/fdc', { useNewUrlParser: true })
 
 mongoose.Error.messages.general.required = "O atributo '{PATH}' é obrigatório."
 mongoose.Error.messages.Number.min = 
