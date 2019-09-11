@@ -12,14 +12,22 @@ module.exports = function(server) {
     protectedApi.use(auth)
 
     // Rotas de Servicos 
-    const Pas = require('../api/fdc/pas/pasService')
-    Pas.register(protectedApi, '/pas')
+    const Busca = require('../api/fdc/servico')
+    const Wfcpas = require('../api/fdc/wfcpas')
+    
+    protectedApi.post('/busca', Busca.servico)
+    protectedApi.post('/wfcpas', Wfcpas.ResumoEtiquetas)
+    
+    
+    //const Pas = require('../api/fdc/pas/pasService')
+    //const Fccau = require('../api/fdc/fccau/fccauService')
+    //const Fcusu = require('../api/fdc/fcusu/fcusuService')
+    //const Vei = require('../api/fdc/vei/veiService')
 
-    const Usu = require('../api/fdc/usu/usuService')
-    Usu.register(protectedApi, '/usu')
-
-    const Vei = require('../api/fdc/vei/veiService')
-    Vei.register(protectedApi, '/vei')
+    //Wfcpas.register(protectedApi, '/wfcpas')
+    //Fccau.register(protectedApi, '/fccau')
+    //Fcusu.register(protectedApi, '/fcusu')
+    //Vei.register(protectedApi, '/vei')
 
     /*
      * Rotas abertas
@@ -31,4 +39,17 @@ module.exports = function(server) {
     openApi.post('/login', AuthService.login)
     openApi.post('/signup', AuthService.signup)
     openApi.post('/validateToken', AuthService.validateToken)
+
+    // Rotas de Teste
+    //const Pass = require('../api/fdc/pas/pasService')
+    //const Fccaus = require('../api/fdc/fccau/fccauService')
+    //const Fcusus = require('../api/fdc/fcusu/fcusuService')
+    //const Veis = require('../api/fdc/vei/veiService')
+    
+    //Pass.register(openApi, '/pass')
+    //Fccaus.register(openApi, '/fccaus')
+    //Fcusus.register(openApi, '/fcusus')
+    //Veis.register(openApi, '/veis')
+
+
 }

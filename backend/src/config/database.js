@@ -1,13 +1,4 @@
-const mongoose = require('mongoose')
+const env = require('../.env')
 
-mongoose.Promise = global.Promise
-//module.exports = mongoose.connect('mongodb://localhost/fdc', { useNewUrlParser: true })
-module.exports = mongoose.connect('mongodb://i-dealers.com:27017/fdc', { useNewUrlParser: true })
+module.exports = env.DB_URL + ':' + env.DB_PORT + '/cgi-bin/' + env.DB_PL + '/' + env.DB_PROG
 
-mongoose.Error.messages.general.required = "O atributo '{PATH}' é obrigatório."
-mongoose.Error.messages.Number.min = 
-    "O '{VALUE}' informado é menor que o limite mínimo de '{MIN}'."
-mongoose.Error.messages.Number.max = 
-    "O '{VALUE}' informado é maior que o limite máximo de '{MAX}'."
-mongoose.Error.messages.String.enum = 
-    "'{VALUE}' não é válido para o atributo '{PATH}'."

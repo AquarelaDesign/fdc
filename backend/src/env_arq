@@ -1,4 +1,8 @@
 // Renomear para .env
 module.exports = {
-    authSecret: ''
+    authSecret: '',
+    DB_URL: '',
+    DB_PORT: ,
+    DB_PL: '',
+    DB_PROG: '',
 }
