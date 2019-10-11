@@ -58,11 +58,12 @@ class Auth extends Component {
         this.setState({ loginMode: !this.state.loginMode })
     }
 
-    handleKeyUp(event) {
-        if (event.keyCode == 13) {
-            return this.onSubmit(event)
-        }
-    }
+    //handleKeyUp(event) {
+    //    if (event.keyCode == 13) {
+    //        return this.onSubmit(event)
+    //    }
+    //}
+    // onKeyUp={v => {this.handleKeyUp(v)}}
 
     //handleFormSubmit() {
     //    const { email, rememberMe } = this.state
@@ -80,8 +81,7 @@ class Auth extends Component {
                 </div>
                 <div className="login-box-body login-form">
                     <form className="frm" 
-                        onSubmit={handleSubmit(v => this.onSubmit(v))} 
-                        onKeyUp={v => {this.handleKeyUp(v)}}>
+                        onSubmit={handleSubmit(v => this.onSubmit(v))} >
                         
                         <h4 className="form-title ftcolor">Informe os dadas de acesso</h4>
                         <br />
