@@ -10,27 +10,32 @@ exports.servico = (req, res) => {
     const pmetodo = req.body.pmetodo || ''
     const pcodprg = req.body.pcodprg || ''
     const pemail = req.body.pemail || ''
-    const widtrans = req.body.widtrans || ''
+    const params = req.body.params || ''
 
     try {      
-        param = { 
+        par = { 
             'pservico': pservico,
             'pmetodo': pmetodo,
             'pcodprg': pcodprg,
-            'pemail': pemail,
-            'widtrans': widtrans 
+            'pemail': pemail
         }
+        //'widtrans': widtrans 
+
+        param = Object.assign(par, params)
         
         Param = querystring.stringify(param)
         Param += '&rand=' + Math.floor((Math.random() * 999999))
+        //res.json({ data : db + '?' + Param })
   
         axios.post(db + '?' + Param)
         .then(response => {
             result = response.data.ProDataSet
             retorno = result.ttretorno.length > 0 ? result.ttretorno[0] : null
             
-            if (result.ttresetq !== undefined ) {
-                Data = result.ttresetq.length > 0 ? result.ttresetq[0] : null
+            //res.json(result)
+
+            if (result !== undefined ) {
+                Data = result //.length > 0 ? result : null
             } else {
                 Data = null
             }

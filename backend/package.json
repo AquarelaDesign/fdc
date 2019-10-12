@@ -1,26 +1,28 @@
 {
-    "name": "fdc-backend",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/loader.js",
-    "scripts": {
-        "dev": "nodemon",
-        "production": "pm2 start src/loader.js --name fdc-backend"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^0.19.0",
-        "body-parser": "^1.19.0",
-        "express": "^4.17.1",
-        "express-query-int": "^3.0.0",
-        "jsonwebtoken": "^8.5.1",
-        "lodash": "^4.17.15",
-        "node-restful": "^0.2.6",
-        "pm2": "^3.5.1"
-    },
-    "devDependencies": {
-        "nodemon": "^1.11.0"
-    }
+  "name": "fdc-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/loader.js",
+  "scripts": {
+    "dev": "nodemon src/loader.js --ignore __tests__",
+    "production": "pm2 start src/loader.js --name fdc-backend",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-query-int": "^3.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "node-restful": "^0.2.6",
+    "pm2": "^3.5.1"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "nodemon": "^1.11.0"
+  }
 }
