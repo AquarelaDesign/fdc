@@ -1,6 +1,3 @@
-const _ = require('lodash')
-const env = require('../../.env')
-
 const querystring = require('querystring')
 const axios = require('axios')
 const db = require('../../config/database')

@@ -54,7 +54,7 @@ const login = (req, res, next) => {
                 })
                 const oficina = Oficina
                 //const { email } = email
-                //console.log('oficina', Oficina)
+                console.log('oficina', Oficina)
                 res.json({ oficina, token })
             } else {
                 return res.status(400).send({ errors: [retorno.mensagem] })

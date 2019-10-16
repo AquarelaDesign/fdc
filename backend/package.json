@@ -1,27 +1,24 @@
 {
   "name": "fdc-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "FDC Services",
   "main": "src/loader.js",
   "scripts": {
-    "dev": "nodemon src/loader.js --ignore __tests__",
-    "production": "pm2 start src/loader.js --name fdc-backend",
-    "test": "jest"
+    "dev": "nodemon src/loader.js",
+    "production": "pm2 start src/loader.js --name fdc-backend"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jose Augusto Freire",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
-    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-query-int": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
-    "node-restful": "^0.2.6",
-    "pm2": "^3.5.1"
+    "mongoose": "^5.6.8"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.19.1",
+    "pm2": "^2.1.5"
   }
 }
