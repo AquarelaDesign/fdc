@@ -97,6 +97,14 @@ export default function Login({ history }) {
 
          <button className="btn1" type="submit">Acessar</button>
          
+         <div id="loginRodape">
+               <a className="cLnk"
+                           onClick={() => this.clickEsqueceuSenha()}>
+                           &nbsp;Esqueceu a Senha?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+               <a className="cLnk"
+                           onClick={() => this.criaUsuario()}>
+                           &nbsp;Criar Conta</a>
+         </div>
       </form>
    )
 }
