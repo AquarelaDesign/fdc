@@ -8,19 +8,18 @@ import './styles.css'
 export default function Dashboard() {
    const [spots, setSpots] = useState([])
    const [requests, setRequests] = useState([])
-
+/*
    const user_id = localStorage.getItem('user')
    const socket = useMemo(() => socketio('http://168.194.69.79:3003', {
       query: { user_id },
    }), [user_id])
-
 
    useEffect(() => {
       socket.on('message_request', data => {
          setRequests([...requests, data])
       })
    }, [requests, socket])
-   
+   */
    useEffect(() => {
       async function loadSpots() {
          const user_id = localStorage.getItem('user')

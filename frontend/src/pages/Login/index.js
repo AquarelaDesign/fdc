@@ -8,15 +8,25 @@ import api from '../../services/api'
 export default function Login({ history }) {
    const [email, setEmail] = useState('')
    const [senha, setSenha] = useState('')
-   const [rememberMe, setRememberMe] = useState(false)
+   const [rememberMe, setRememberMe] = useState(true)
 
    const { addToast } = useToasts()
 
    useEffect(() => {
       const token = localStorage.getItem('@fdc/token')
       const email = localStorage.getItem('@fdc/email')
-      setRememberMe(localStorage.getItem('@fdc/rememberMe'))
+      const remember = localStorage.getItem('@fdc/rememberMe')
+
+      //let bol = remember == "true" ? true : false
+
+      setRememberMe(remember == "true" ? true : false)
+
+      if (remember == "true") {
+         setEmail(email)
+      }
       
+      //console.log(remember, bol, rememberMe, email)
+
       async function validateToken() {
          const response = await api.post('/oapi/validateToken', {
             "email": email,
@@ -29,7 +39,7 @@ export default function Login({ history }) {
       }
       
       validateToken()
-   }, [])
+   }, [email])
 
    async function handleSubmit(event) {
       event.preventDefault();
@@ -41,10 +51,9 @@ export default function Login({ history }) {
 
          const { oficina, token } = response.data
          
-         console.table(oficina)
-
          localStorage.setItem('@fdc/email', email)
          localStorage.setItem('@fdc/token', token)
+         localStorage.setItem('@fdc/oficina', JSON.stringify(oficina))
          localStorage.setItem('@fdc/rememberMe', rememberMe)
 
          history.push('/dashboard')
