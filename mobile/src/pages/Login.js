@@ -45,7 +45,7 @@ export default function Login({ navigation }) {
          await AsyncStorage.setItem('oficina', JSON.stringify(oficina))
          await AsyncStorage.setItem('token', token)
 
-         console.log('oficina', oficina, token)
+         //console.log('oficina', oficina, token)
 
          navigation.navigate('MainMenu')
       }
