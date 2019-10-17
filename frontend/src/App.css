@@ -24,7 +24,7 @@ body, input, button {
 
 .container {
   margin: 80px auto;
-  max-width: 450px;
+  max-width: 370px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -33,10 +33,10 @@ body, input, button {
 
 .content {
   width: 100%;
-  background: #FFF;
-  margin-top: 50px;
+  background-color: rgba(78, 212, 230, 0.493);
+  margin-top: 20px;
   border-radius: 4px;
-  padding: 30px;
+  padding: 0 40px;
 }
 
 .content > p {
@@ -46,8 +46,10 @@ body, input, button {
 }
 
 .content > form {
+  margin-top: 45px;
   display: flex;
   flex-direction: column;
+  margin-bottom: -10px;
 }
 
 .content form label {
@@ -63,7 +65,7 @@ body, input, button {
   font-size: 12px;
 }
 
-.content form input {
+.content form input.login {
   margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 2px;
@@ -87,4 +89,60 @@ body, input, button {
 
 .content button.btn1:hover {
   background: #2393ac;
+}
+
+.form-title {
+  font-weight: 300;
+  margin-bottom: 25px;
+}
+
+#loginRodape {
+  margin-top: 10px;
+  border: 1px solid #3b6184;
+  width: 370px;
+  height: 25px;
+  text-align: center;
+  background-color: #3a5e7f;
+  margin-left: -40px;
+}
+
+#loginRodape a {
+  color: #bbb;
+  font-size: .9em;
+  text-decoration: none;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+#boxContainer {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#box {
+  margin-top: 2;
+  width: 20;
+  height: 20;
+  margin: 5;
+  margin-left: 2;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.content label.form-title {
+  margin-bottom: 24px;
+  color: #FFF;  
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+}
+
+.content label.ckbox {
+  color: #FFF;
+  font-weight: 300;
+  font-size: 14px;
+}
+
+.cLnk {
+  cursor: pointer;
 }

@@ -8,12 +8,14 @@ import api from '../../services/api'
 export default function Login({ history }) {
    const [email, setEmail] = useState('')
    const [senha, setSenha] = useState('')
+   const [rememberMe, setRememberMe] = useState(false)
 
    const { addToast } = useToasts()
 
    useEffect(() => {
-      const token = localStorage.getItem('@fdc/token');
-      const email = localStorage.getItem('@fdc/email');
+      const token = localStorage.getItem('@fdc/token')
+      const email = localStorage.getItem('@fdc/email')
+      setRememberMe(localStorage.getItem('@fdc/rememberMe'))
       
       async function validateToken() {
          const response = await api.post('/oapi/validateToken', {
@@ -43,6 +45,7 @@ export default function Login({ history }) {
 
          localStorage.setItem('@fdc/email', email)
          localStorage.setItem('@fdc/token', token)
+         localStorage.setItem('@fdc/rememberMe', rememberMe)
 
          history.push('/dashboard')
       }
@@ -63,28 +66,37 @@ export default function Login({ history }) {
    }
    
    return (
-      <div className="login-box">
-         <div className="login-box-body login-form content">
-            <form onSubmit={handleSubmit}>
-               <input 
-                  id="email" 
-                  type="email" 
-                  placeholder="E-mail" 
-                  value={email}
-                  onChange={event => setEmail(event.target.value)}
-               />
-               
-               <input 
-                  id="senha" 
-                  type="password" 
-                  placeholder="Senha" 
-                  value={senha}
-                  onChange={event => setSenha(event.target.value)}
-               />
-               
-               <button className="btn1" type="submit">Acessar</button>
-            </form>
-         </div>
-      </div>
+      <form onSubmit={handleSubmit}>
+         <label className="form-title">Informe os dadas de acesso</label>
+         <input 
+            className="login"
+            id="email" 
+            type="email" 
+            placeholder="E-mail" 
+            value={email}
+            onChange={event => setEmail(event.target.value)}
+         />
+         
+         <input 
+            className="login"
+            id="senha" 
+            type="password" 
+            placeholder="Senha" 
+            value={senha}
+            onChange={event => setSenha(event.target.value)}
+         />
+         
+         <label className="ckbox"> 
+            <input 
+               type="checkbox" 
+               name="rememberMe" 
+               checked={rememberMe}
+               onChange={event => setRememberMe(event.target.checked)} /> 
+            &nbsp;Lembrar dados de acesso
+         </label>
+
+         <button className="btn1" type="submit">Acessar</button>
+         
+      </form>
    )
 }
