@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, AsyncStorage, KeyboardAvoidingView, Alert, Image, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground  } from 'react-native'
+import { View, AsyncStorage, KeyboardAvoidingView, Alert, Image, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native'
 
-import Alerta from '../components/Alerta'
+//import Alerta from '../components/Alerta'
 import api from '../services/api'
 
 import logo from '../assets/logo.png'
@@ -13,13 +13,22 @@ import bg from '../assets/splash.png'
 export default function Login({ navigation }) {
    const [email, setEmail] = useState('')
    const [password, setPassword] = useState('')
-   const [showAlert, setShowAlert] = useState([false])
+   //const [showAlert, setShowAlert] = useState([false])
 
    useEffect(() => {
-      AsyncStorage.getItem('user').then(user => {
-         if (user) {
-            navigation.navigate('List')
+      AsyncStorage.getItem('token').then(token => {
+         async function validateToken() {
+            const response = await api.post('/oapi/validateToken', {
+               "email": email,
+               "token": token
+            })
+            
+            if (token) {
+               //navigation.navigate('MainMenu')
+            } 
          }
+         
+         validateToken()
       })
    }, [])
 
@@ -31,23 +40,25 @@ export default function Login({ navigation }) {
             "senha": password
          })
 
-         console.log(response.status)
+         const { oficina, token } = response.data
+
+         await AsyncStorage.setItem('oficina', JSON.stringify(oficina))
+         await AsyncStorage.setItem('token', token)
+
+         console.log('oficina', oficina, token)
+
+         navigation.navigate('MainMenu')
       }
       catch(error) {
          const { response } = error
-
-         setShowAlert(true)
-         //console.log(response.data.errors)
-         Alert.alert(response.data.errors[0])
+         if ( response !== undefined ) {
+            Alert.alert(response.data.errors[0])
+         } else {
+            //Alert.alert(response.data.errors[0])
+            console.log('Erro:', error)
+         }
       }
 
-      //const { _id } = response.data
-
-      //await AsyncStorage.setItem('user', _id)
-      //await AsyncStorage.setItem('password', password)
-
-      //navigation.navigate('List')
-      
    }
    
    return (
