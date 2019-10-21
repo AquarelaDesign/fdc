@@ -21,7 +21,7 @@ button {
 .logo-header {
     margin-left: -14px;
     width: 150px;
-    content: url(../../images/logo-procyon.png);
+    content: url(../../assets/logo.png);
 }
 
 /* unvisited link */

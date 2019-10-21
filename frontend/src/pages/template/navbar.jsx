@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 export default function Navbar(props) {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   function changeOpen() {
     setOpen(!open)

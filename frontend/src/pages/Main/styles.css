@@ -1,3 +1,63 @@
+ 
+ @keyframes App-logo-spin {
+   from {
+     transform: rotate(0deg);
+   }
+   to {
+     transform: rotate(360deg);
+   }
+}
+
+.logo-header {
+   margin-left: -14px;
+   width: 150px;
+   content: url(../../assets/logo.png);
+}
+
+#logo {
+   display: flex;
+   height: 50px;
+   margin: 10px auto;
+}
+
+.navbar .space {
+   width: auto;
+}
+
+.main-header .logo {
+   font-size: 16px;
+}
+
+.navbar {
+   justify-content: flex-end;
+   margin: 0;
+   padding: 0;
+   text-align: justify;
+}
+
+/*
+.navbar {
+   flex: 1;
+   width: 100%;
+   height: 50px;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   justify-content: stretch;
+   margin: 0;
+   padding: 0;
+}
+*/
+.navbar ul {
+   justify-content: flex-end;
+   flex-direction: row;
+   flex-wrap: nowrap;
+}
+
+footer {
+   text-align: center;
+}
+
+/*
 ul.spot-list {
    width: 100%;
    list-style: none;
@@ -56,4 +116,4 @@ ul.notifications li button.accept {
 ul.notifications li button.accept {
    color: #e55e5e;
 }
-
+*/

@@ -24,7 +24,7 @@ export default function Login({ navigation }) {
             })
             
             if (token) {
-               //navigation.navigate('MainMenu')
+               navigation.navigate('MainMenu')
             } 
          }
          
