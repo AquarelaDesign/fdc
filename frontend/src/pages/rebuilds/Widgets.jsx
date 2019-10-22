@@ -147,7 +147,7 @@ class Widgets extends Component {
           </Col>
         </Row>
       </Content>
-);
+    )
   }
 }
 

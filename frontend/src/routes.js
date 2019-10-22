@@ -6,7 +6,7 @@ import Login from './pages/login'
 import Main from './pages/main'
 import ComponentBuilder from './pages/ComponentBuilder'
 import ExamplesWithJSX from './pages/ExamplesWithJSX'
-import Dashboard from './pages/rebuilds/Dashboard'
+// import Etiquetas fro./pages/etiquetas/Etiquetas
 import DashboardV2 from './pages/rebuilds/DashboardV2'
 import ChartJS from './pages/rebuilds/charts/ChartJS'
 import Widgets from './pages/rebuilds/Widgets'
@@ -17,7 +17,6 @@ export default function Routes() {
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/main" component={Main} exact />
-        <Route path="/dashboard" component={Dashboard} exact />
         <Route path="/dashboardv2" component={DashboardV2} exact />
         <Route path="/component-builder" component={ComponentBuilder} />
         <Route path="/examples-with-jsx" component={ExamplesWithJSX} />

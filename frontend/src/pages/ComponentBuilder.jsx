@@ -21,8 +21,9 @@ class ComponentBuilder extends Component {
   }
 
   render() {
-    // const defaultProps = Object.entries(Box.defaultProps).map(([prop, defaultValue]) => ({ prop, defaultValue }));
-    // eslint-disable-next-line react/sort-comp
+    // const defaultProps = Object.entries(Box.defaultProps).map(([prop, defaultValue])
+    // => ({ prop, defaultValue }));
+    // eslint-disable-next-line react/forbid-foreign-prop-types
     let propTypes = Object.entries(Box.propTypes).map(([prop, propType]) => ({ prop, propType }));
     propTypes = propTypes.map(({ prop, propType }) => {
       const defaultValue = Box.defaultProps[prop];
@@ -50,7 +51,13 @@ class ComponentBuilder extends Component {
           <Row>
             <Col xs={4}>
               <Margin>
-                <Slider min={1} max={12} step={1} defaultValue={ColWidth} onChange={this.onAfterSliderChange} />
+                <Slider
+                  min={1}
+                  max={12}
+                  step={1}
+                  defaultValue={ColWidth}
+                  onChange={this.onAfterSliderChange}
+                />
               </Margin>
             </Col>
             <Col xs={4}>

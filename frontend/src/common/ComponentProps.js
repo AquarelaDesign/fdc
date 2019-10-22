@@ -42,4 +42,4 @@ const Box = {
   ])',
 };
 
-export default { Box };
+export { Box };

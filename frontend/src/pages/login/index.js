@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-// import { useToasts } from 'react-toast-notifications'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
+import { useToasts } from 'react-toast-notifications'
 
 import {
-  Alert, Button,
+  Button,
 } from 'adminlte-2-react';
 
 import api from '../../services/api'
@@ -18,14 +16,12 @@ export default function Login({ history }) {
   const [senha, setSenha] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
 
-  // const { addToast } = useToasts()
+  const { addToast } = useToasts()
 
   useEffect(() => {
     const token = localStorage.getItem('@fdc/token')
     const email = localStorage.getItem('@fdc/email')
     const remember = localStorage.getItem('@fdc/rememberMe')
-
-    // let bol = remember == "true" ? true : false
 
     setRememberMe(remember === 'true')
 
@@ -33,15 +29,13 @@ export default function Login({ history }) {
       setEmail(email)
     }
 
-    // console.log(remember, bol, rememberMe, email)
-
     async function validateToken() {
       const response = await api.post('/oapi/validateToken', {
         email, token
       })
 
       if (response.data.valid) {
-        // history.push('/main')
+        history.push('/main')
       }
     }
 
@@ -75,16 +69,15 @@ export default function Login({ history }) {
     } catch (error) {
       const { response } = error
       if (response !== undefined) {
-        // Alert.text = response.data.errors[0]
-        
-        // Alert.alert(response.data.errors[0])
-        // addToast(response.data.errors[0], {
-        //   appearance: 'error',
-        //   autoDismiss: true
-        // })
+        addToast(response.data.errors[0], {
+          appearance: 'error',
+          autoDismiss: true
+        })
       } else {
-        // Alert.alert(response.data.errors[0])
-        console.log('Erro: ', error)
+        addToast(error, {
+          appearance: 'error',
+          autoDismiss: true
+        })
       }
     }
   }
