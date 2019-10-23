@@ -8,6 +8,7 @@ import logo from '../../assets/logo.png'
 
 import Footer from '../template/footer'
 import Etiquetas from '../etiquetas'
+import Tfcmon from '../tfcmon'
 
 
 const { Item } = Sidebar
@@ -17,7 +18,7 @@ export default function Main({ history }) {
   useEffect(() => {
     const token = localStorage.getItem('@fdc/token')
 
-    if (token === null) {
+    if (token === null || token === '' || token === undefined) {
       history.push('/')
     }
   }, [])
@@ -108,6 +109,7 @@ export default function Main({ history }) {
       </Sidebar.Core>
 
       <Etiquetas path="/etiquetas" exact />
+      <Tfcmon path="/tfcmon" exact />
 
     </AdminLTE>
   )
