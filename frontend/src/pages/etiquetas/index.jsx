@@ -1,6 +1,4 @@
-/* eslint-disable no-useless-constructor */
-/* eslint-disable react/prefer-stateless-function */
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Content, Row, Col, Infobox2
 } from 'adminlte-2-react';
@@ -9,19 +7,24 @@ import api from '../../services/api'
 
 import './styles.css'
 
-const token = localStorage.getItem('@fdc/token')
-const email = localStorage.getItem('@fdc/email')
-const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
+export default function Etiquetas({ history }) {
+  const [resetq, setResetq] = useState({
+    qtetqn: 0, qtetqp: 0, qtetqtot: 0, qtetqv: 0, qtperd: 0, qtreal: 0
+  })
 
-if (token === null) {
-  localStorage.setItem('@fdc/token', '')
-  window.location.href = '/'
-}
+  const {
+    qtetqn, qtetqp, qtetqtot, qtetqv, qtperd, qtreal
+  } = resetq
 
-class Etiquetas extends Component {
-  ttresetq = {}
+  useEffect(() => {
+    const token = localStorage.getItem('@fdc/token')
+    const email = localStorage.getItem('@fdc/email')
+    const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
 
-  componentWillMount() {
+    if (token === undefined || token === '') {
+      history.push('/')
+    }
+
     async function buscaEtqs() {
       const response = await api.post('/v01/busca', {
         pservico: 'wfcpas',
@@ -36,82 +39,71 @@ class Etiquetas extends Component {
       })
 
       if (response.data) {
-        this.setState(this.ttresetq, response.data.ttresetq)
+        setResetq(response.data.data.ttresetq[0])
       }
     }
 
     buscaEtqs()
-  }
+  }, [])
 
-  render() {
-    const {
-      qtetqn, qtetqp, qtetqtot, qtetqv, qtperd, qtreal
-    } = this.ttresetq
-
-    console.log(this.ttresetq)
-    console.log(qtetqn, qtetqp, qtetqtot, qtetqv, qtperd, qtreal)
-
-    return (
-      <Content title="Etiquetas">
-        <Row>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="fas-tags"
-              color="gray"
-              title={qtetqtot}
-              text="Alertas"
-              footerText="Detalhes "
-            />
-          </Col>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="far-check-square"
-              color="green"
-              title={qtetqn}
-              text="Normais"
-              footerText="Detalhes "
-            />
-          </Col>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="fas-exclamation-triangle"
-              color="yellow"
-              title={qtetqp}
-              text="Próximas"
-              footerText="Detalhes "
-            />
-          </Col>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="fa-times"
-              color="red"
-              title={qtetqv}
-              text="Vencidas"
-              footerText="Detalhes "
-            />
-          </Col>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="fas-thumbs-up"
-              color="blue"
-              title={qtreal}
-              text="Efetuadas"
-              footerText="Detalhes "
-            />
-          </Col>
-          <Col xs={12} sm={4} md={2}>
-            <Infobox2
-              icon="fas-thumbs-down"
-              color="navy"
-              title={qtperd}
-              text="Perdidas"
-              footerText="Detalhes "
-            />
-          </Col>
-        </Row>
-      </Content>
-    );
-  }
+  return (
+    <Content title="Etiquetas de Revisão">
+      <Row>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="fas-tags"
+            color="gray"
+            title={qtetqtot}
+            text="Alertas"
+            footerText="Detalhes "
+          />
+        </Col>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="far-check-square"
+            color="green"
+            title={qtetqn}
+            text="Normais"
+            footerText="Detalhes "
+          />
+        </Col>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="fas-exclamation-triangle"
+            color="yellow"
+            title={qtetqp}
+            text="Próximas"
+            footerText="Detalhes "
+          />
+        </Col>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="fa-times"
+            color="red"
+            title={qtetqv}
+            text="Vencidas"
+            footerText="Detalhes "
+          />
+        </Col>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="fas-thumbs-up"
+            color="blue"
+            title={qtreal}
+            text="Efetuadas"
+            footerText="Detalhes "
+          />
+        </Col>
+        <Col xs={12} sm={4} md={2}>
+          <Infobox2
+            icon="fas-thumbs-down"
+            color="navy"
+            title={qtperd}
+            text="Perdidas"
+            footerText="Detalhes "
+          />
+        </Col>
+      </Row>
+    </Content>
+  )
 }
-
-export default Etiquetas;
