@@ -1,141 +1,146 @@
-import React, { useState, useEffect } from 'react'
-import { useToasts } from 'react-toast-notifications'
-
-import {
-  Button,
-} from 'adminlte-2-react';
+import React, { Component } from 'react';
+import { 
+  Container, 
+  Form, 
+  Input, 
+} from 'reactstrap';
 
 import api from '../../services/api'
-
 import logo from '../../assets/logo.png'
-
 import './styles.css'
 
-export default function Login({ history }) {
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [rememberMe, setRememberMe] = useState(true)
+class Login extends Component {
 
-  const { addToast } = useToasts()
+  constructor(props) {
+    super(props)
+    this.state = { 
+        email: '',
+        senha: '',
+        rememberMe: false 
+    }
+  }
 
-  useEffect(() => {
-    const token = localStorage.getItem('@fdc/token')
+  componentDidMount() {
     const email = localStorage.getItem('@fdc/email')
     const remember = localStorage.getItem('@fdc/rememberMe')
-
-    setRememberMe(remember === 'true')
-
-    if (remember === 'true') {
-      setEmail(email)
+    
+    this.setState({ rememberMe: remember === 'true' })
+    
+    if (this.state.rememberMe) {
+      this.setState({ email })
     }
+  }
 
-    async function validateToken() {
-      const response = await api.post('/oapi/validateToken', {
-        email, token
-      })
-
-      if (response.data.valid) {
-        history.push('/main')
-      }
-    }
-
-    validateToken()
-  }, [email])
-
-  async function clickEsqueceuSenha() {
+  async clickEsqueceuSenha() {
     console.log('clickEsqueceuSenha')
   }
 
-  async function criaUsuario() {
+  async criaUsuario() {
     console.log('criaUsuario')
   }
 
-  async function handleSubmit(event) {
+  onChange(event) {
+    const input = event.target
+    const value = input.type === 'checkbox' ? input.checked : input.value
+
+    console.log('input', input.id, value)
+
+    this.setState({ [input.id]: value })
+  }
+
+  async handleSubmit(event) {
     event.preventDefault();
 
     try {
-      const response = await api.post('/oapi/login', {
-        email, senha
+      await api.post('/oapi/login', {
+        email: this.state.email, 
+        senha: this.state.senha
+      })
+      .then(res => {
+        const { oficina, token } = res.data
+
+        localStorage.setItem('@fdc/email', this.state.email)
+        localStorage.setItem('@fdc/token', token)
+        localStorage.setItem('@fdc/oficina', JSON.stringify(oficina))
+        localStorage.setItem('@fdc/rememberMe', this.state.rememberMe)
+  
+        this.props.history.push('/home')
       })
 
-      const { oficina, token } = response.data
-
-      localStorage.setItem('@fdc/email', email)
-      localStorage.setItem('@fdc/token', token)
-      localStorage.setItem('@fdc/oficina', JSON.stringify(oficina))
-      localStorage.setItem('@fdc/rememberMe', rememberMe)
-
-      history.push('/main')
     } catch (error) {
       const { response } = error
       if (response !== undefined) {
-        addToast(response.data.errors[0], {
-          appearance: 'error',
-          autoDismiss: true
-        })
+        // addToast(response.data.errors[0], { appearance: 'error', autoDismiss: true })
+        console.log(response.data.errors[0])
       } else {
-        addToast(error, {
-          appearance: 'error',
-          autoDismiss: true
-        })
+        // addToast(error, { appearance: 'error', autoDismiss: true })
+        console.log('error', error)
       }
     }
   }
 
-  return (
-    <div className="container">
-      <img id="logo" src={logo} alt="Ficha do Carro" />
-      <div className="content">
-        <div className="login">
-          <form onSubmit={handleSubmit}>
-            <label className="form-title">Informe os dadas de acesso</label>
-            <input
-              className="login"
-              id="email"
-              type="email"
-              placeholder="E-mail"
-              value={email}
-              onChange={event => setEmail(event.target.value)}
-            />
+  render() {
+    // const { email, rememberMe } = this.state
+    // const { handleSubmit } = this.props
+    
+    return (
+      <div className="app flex-row align-items-center">
+        <Container>
+          <img id="logo" src={logo} alt="Ficha do Carro" />
+          <div className="content">
+            <div className="login">
+              <Form onSubmit={e => {this.handleSubmit(e)}}>
+                <label className="form-title">Informe os dados de acesso</label>
+                <Input
+                  className="login"
+                  id="email"
+                  type="text"
+                  value={this.state.email}
+                  placeholder="E-mail"
+                  onChange={e => {this.onChange(e)}}
+                />
 
-            <input
-              className="login"
-              id="senha"
-              type="password"
-              placeholder="Senha"
-              value={senha}
-              onChange={event => setSenha(event.target.value)}
-            />
+                <Input
+                  className="login"
+                  id="senha"
+                  type="password"
+                  placeholder="Senha"
+                  autoComplete="current-password"
+                  onChange={e => {this.onChange(e)}}
+                />
 
-            <label className="ckbox">
-              <input
-                type="checkbox"
-                name="rememberMe"
-                checked={rememberMe}
-                onChange={event => setRememberMe(event.target.checked)}
-              />
-              &nbsp;Lembrar dados de acesso
-            </label>
+                <label className="ckbox">
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    checked={this.state.rememberMe}
+                    onChange={e => {this.onChange(e)}}
+                  />
+                  &nbsp;Lembrar dados de acesso
+                </label>
 
-            <button className="btn1" type="submit">Acessar</button>
+                <button className="btn1" type="submit">Acessar</button>
 
-            <div className="loginRodape">
-              <Button
-                className="btnRLogin"
-                icon="fa-envelope"
-                text="Esqueceu a Senha?"
-                onClick={clickEsqueceuSenha}
-              />
-              <Button
-                className="btnRLogin"
-                icon="fa-key"
-                text="Criar Conta"
-                onClick={criaUsuario}
-              />
+                <div className="loginRodape">
+                  <button
+                    className="btnRLogin"
+                    type="button"
+                    onClick={this.clickEsqueceuSenha}
+                  ><i className="fa fa-envelope-o"> Esqueceu a Senha?</i></button>
+                  <button
+                    className="btnRLogin"
+                    type="button"
+                    icon="fa-key"
+                    onClick={this.criaUsuario}
+                  ><i className="fa fa-key"> Criar Conta</i></button>
+                </div>
+              </Form>
             </div>
-          </form>
-        </div>
+          </div>
+        </Container>
       </div>
-    </div>
-  )
+    )
+  }
 }
+
+export default Login
