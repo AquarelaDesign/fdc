@@ -58,7 +58,7 @@ class Login extends Component {
     const input = event.target
     const value = input.type === 'checkbox' ? input.checked : input.value
 
-    console.log('onChange', input.type, input.checked, value, input)
+    // console.log('onChange', input.type, input.checked, value, input)
 
     this.setState({ [input.id]: value })
   }
@@ -103,7 +103,7 @@ class Login extends Component {
   render() {
     const { email, rememberMe } = this.state
 
-    console.log(rememberMe)
+    // console.log(rememberMe)
 
     return (
       <div className="app flex-row align-items-center">

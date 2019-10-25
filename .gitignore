@@ -7,3 +7,5 @@ frontend-old
 node_modules
 frontend-bak
 frontend-new
+frontend/package-lock.json
+package-lock.json

@@ -2,6 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
+import Lottie from 'react-lottie';
 
 import {
   AppAside,
@@ -21,6 +22,17 @@ import navigation from '../../_nav';
 import routes from '../../routes';
 
 import api from '../../services/api'
+
+import * as animationData from '../../assets/json/1204-car.json'
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true, 
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice'
+  }
+}
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -45,7 +57,15 @@ class DefaultLayout extends Component {
     validateToken(this.props)
   }
 
-  loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  // loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  
+  loading = () => <Lottie 
+                    options={defaultOptions}
+                    height={400}
+                    width={400}
+                    isStopped={false}
+                    isPaused={false}/>
+
 
   signOut(e) {
     e.preventDefault()

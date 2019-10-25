@@ -3,27 +3,23 @@ import { Bar, Line } from 'react-chartjs-2'
 import {
   Badge,
   Button,
-  ButtonDropdown,
-  ButtonGroup,
-  ButtonToolbar,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  CardTitle,
   Col,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Progress,
   Row,
   Table,
 } from 'reactstrap'
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips'
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
+import * as moment from 'moment'
+import 'moment/locale/pt-br'
 
 import { Etiquetas } from '../../components'
+
+import api from '../../services/api'
 
 const Widget03 = lazy(() => import('../../views/Widgets/Widget03'))
 
@@ -33,208 +29,13 @@ const brandInfo = getStyle('--info')
 const brandWarning = getStyle('--warning')
 const brandDanger = getStyle('--danger')
 
-// Card Chart 1
-const cardChartData1 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandPrimary,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [65, 59, 84, 84, 51, 55, 40],
-    },
-  ],
-};
-
-const cardChartOpts1 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData1.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData1.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  }
-}
-
-
-// Card Chart 2
-const cardChartData2 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: brandInfo,
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [1, 18, 9, 17, 34, 22, 11],
-    },
-  ],
-};
-
-const cardChartOpts2 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        gridLines: {
-          color: 'transparent',
-          zeroLineColor: 'transparent',
-        },
-        ticks: {
-          fontSize: 2,
-          fontColor: 'transparent',
-        },
-
-      }],
-    yAxes: [
-      {
-        display: false,
-        ticks: {
-          display: false,
-          min: Math.min.apply(Math, cardChartData2.datasets[0].data) - 5,
-          max: Math.max.apply(Math, cardChartData2.datasets[0].data) + 5,
-        },
-      }],
-  },
-  elements: {
-    line: {
-      tension: 0.00001,
-      borderWidth: 1,
-    },
-    point: {
-      radius: 4,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 3
-const cardChartData3 = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.2)',
-      borderColor: 'rgba(255,255,255,.55)',
-      data: [78, 81, 80, 45, 34, 12, 40],
-    },
-  ],
-};
-
-const cardChartOpts3 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-  elements: {
-    line: {
-      borderWidth: 2,
-    },
-    point: {
-      radius: 0,
-      hitRadius: 10,
-      hoverRadius: 4,
-    },
-  },
-};
-
-// Card Chart 4
-const cardChartData4 = {
-  labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'My First dataset',
-      backgroundColor: 'rgba(255,255,255,.3)',
-      borderColor: 'transparent',
-      data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
-    },
-  ],
-};
-
-const cardChartOpts4 = {
-  tooltips: {
-    enabled: false,
-    custom: CustomTooltips
-  },
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  scales: {
-    xAxes: [
-      {
-        display: false,
-        barPercentage: 0.6,
-      }],
-    yAxes: [
-      {
-        display: false,
-      }],
-  },
-};
-
 // Social Box Chart
 const socialBoxData = [
   { data: [65, 59, 84, 84, 51, 55, 40], label: 'facebook' },
   { data: [1, 13, 9, 17, 34, 41, 38], label: 'twitter' },
   { data: [78, 81, 80, 45, 34, 12, 40], label: 'linkedin' },
   { data: [35, 23, 56, 22, 97, 23, 64], label: 'google' },
-];
+]
 
 const makeSocialBoxData = (dataSetNo) => {
   const dataset = socialBoxData[dataSetNo];
@@ -252,7 +53,7 @@ const makeSocialBoxData = (dataSetNo) => {
     ],
   };
   return () => data;
-};
+}
 
 const socialChartOpts = {
   tooltips: {
@@ -282,7 +83,7 @@ const socialChartOpts = {
       hoverBorderWidth: 3,
     },
   },
-};
+}
 
 // sparkline charts
 const sparkLineChartData = [
@@ -310,7 +111,7 @@ const sparkLineChartData = [
     data: [1, 13, 9, 17, 34, 41, 38],
     label: 'Bounce Rate',
   },
-];
+]
 
 const makeSparkLineData = (dataSetNo, variant) => {
   const dataset = sparkLineChartData[dataSetNo];
@@ -326,7 +127,7 @@ const makeSparkLineData = (dataSetNo, variant) => {
     ],
   };
   return () => data;
-};
+}
 
 const sparklineChartOpts = {
   tooltips: {
@@ -359,7 +160,7 @@ const sparklineChartOpts = {
   legend: {
     display: false,
   },
-};
+}
 
 // Main Chart
 
@@ -368,10 +169,10 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-var elements = 27;
-var data1 = [];
-var data2 = [];
-var data3 = [];
+var elements = 27
+var data1 = []
+var data2 = []
+var data3 = []
 
 for (var i = 0; i <= elements; i++) {
   data1.push(random(50, 200));
@@ -408,7 +209,7 @@ const mainChart = {
       data: data3,
     },
   ],
-};
+}
 
 const mainChartOpts = {
   tooltips: {
@@ -452,7 +253,14 @@ const mainChartOpts = {
       hoverBorderWidth: 3,
     },
   },
-};
+}
+
+moment.locale('pt-BR')
+const dataInicial = moment().startOf('month').format('L');
+const dataFinal   = moment().endOf('month').format('L');
+
+const email = localStorage.getItem('@fdc/email')
+const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
 
 class Dashboard extends Component {
   constructor(props) {
@@ -464,24 +272,93 @@ class Dashboard extends Component {
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
-    };
+      ttresetq: [{
+        qtetqn:'', qtetqp:'', qtetqtot:'', qtetqv:'', qtperd:'', qtreal:''
+      }],
+      ttfccpvl: [],
+      ttpagto: [],
+      ttpec: [],
+      ttresumo: [],
+      ttretorno: [],
+      ttserv: [],
+    }
+  }
+
+  componentDidMount() {
+    const dados = this.buscaEtqs()
+    dados.then(valor => {
+      this.setState({ ttresetq: valor })
+    })
+
+    const passagens = this.buscaPas()
+    passagens.then(data => {
+      const { ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv, } = data
+      this.setState({ ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv })
+    })
+  }
+
+  async buscaEtqs() {
+    const response = await api.post('/v01/busca', {
+      pservico: 'wfcpas',
+      pmetodo: 'ResumoEtiquetas',
+      pcodprg: 'TFCINI',
+      pemail: email,
+      params: {
+        widtrans: `${oficina.codemp}|1|1|${email}`,
+        wip: '192.168.50.138',
+        wseqaba: 0
+      }
+    })
+
+    if (response.data) {
+      return response.data.data.ttresetq
+    } else {
+      return response.data.errors
+    }
+  }
+
+  async buscaPas() {
+    const response = await api.post('/v01/busca', {
+      pservico: 'wfcpas',
+      pmetodo: 'ListaPassagens',
+      pcodprg: 'TFCMON',
+      pemail: email,
+      params: {
+        pdatini: dataInicial,
+        pdatfim: dataFinal,
+        psituac: 'TOD',
+        widtrans: `${oficina.codemp}|1|1|${email}`,
+        wip: '192.168.50.138',
+        wseqaba: 0
+      }
+    })
+
+    if (response.data) {
+      return response.data.data
+    } else {
+      return response.data.errors
+    }
   }
 
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
-    });
+    })
   }
 
   onRadioBtnClick(radioSelected) {
     this.setState({
       radioSelected: radioSelected,
-    });
+    })
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   render() {
+    const { ttresetq } = this.state
+    const Resetq = ttresetq[0]
+
+    console.log('render', this.state)
 
     return (
       <div className="animated fadeIn">
@@ -489,136 +366,69 @@ class Dashboard extends Component {
         <Row>
           <Col xs="12" sm="4" lg="2">
             <Etiquetas 
-              className="text-white bg-info"
+              className="text-white bg-gray-700"
               icon="fa fa-tags" 
               mainText="Abertas"
               color="secondary"
-              value="01"
+              value={Resetq.qtetqtot}
               link="#/charts"
-              chartType="1"
-              chart
-              chartData={cardChartData4}
-              chartOptions={cardChartOpts4}
               footer
             />
           </Col>
-
           <Col xs="12" sm="4" lg="2">
-            <Card className="text-white bg-success">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card2' isOpen={this.state.card2} toggle={() => { this.setState({ card2: !this.state.card2 }); }}>
-                    <DropdownToggle className="p-0" color="transparent">
-                      <i className="icon-arrow-right-circle"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Detalhes</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">0</div>
-                <div>Normais</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Line data={cardChartData1} options={cardChartOpts1} height={70} />
-              </div>
-            </Card>
+            <Etiquetas 
+              className="text-white bg-success"
+              icon="fa fa-check-square-o" 
+              mainText="Normais"
+              color="secondary"
+              value={Resetq.qtetqn}
+              link="#/charts"
+              footer
+            />
           </Col>
-
           <Col xs="12" sm="4" lg="2">
-            <Card className="text-white bg-warning">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card3' isOpen={this.state.card3} toggle={() => { this.setState({ card3: !this.state.card3 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper" style={{ height: '70px' }}>
-                <Line data={cardChartData3} options={cardChartOpts3} height={70} />
-              </div>
-            </Card>
+            <Etiquetas 
+              className="text-white bg-warning"
+              icon="fa fa-exclamation-triangle" 
+              mainText="Próximas"
+              color="secondary"
+              value={Resetq.qtetqp}
+              link="#/charts"
+              footer
+            />
           </Col>
-
           <Col xs="12" sm="4" lg="2">
-            <Card className="text-white bg-danger">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
-              </div>
-            </Card>
+            <Etiquetas 
+              className="text-white bg-danger"
+              icon="fa fa-times" 
+              mainText="Vencidas"
+              color="secondary"
+              value={Resetq.qtetqv}
+              link="#/charts"
+              footer
+            />
           </Col>
-
           <Col xs="12" sm="4" lg="2">
-            <Card className="text-white bg-danger">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
-              </div>
-            </Card>
+            <Etiquetas 
+              className="text-white bg-primary"
+              icon="fa fa-thumbs-up" 
+              mainText="Efetuadas"
+              color="secondary"
+              value={Resetq.qtreal}
+              link="#/charts"
+              footer
+            />
           </Col>
-
           <Col xs="12" sm="4" lg="2">
-            <Card className="text-white bg-dark">
-              <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
-                <div className="text-value">9.823</div>
-                <div>Members online</div>
-              </CardBody>
-              <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
-                <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
-              </div>
-            </Card>
+            <Etiquetas 
+              className="text-white bg-dark"
+              icon="fa fa-thumbs-down" 
+              mainText="Perdidas"
+              color="secondary"
+              value={Resetq.qtperd}
+              link="#/charts"
+              footer
+            />
           </Col>
         </Row>
         
@@ -626,6 +436,7 @@ class Dashboard extends Component {
           <Col>
             <Card>
               <CardBody>
+                {/* 
                 <Row>
                   <Col sm="5">
                     <CardTitle className="mb-0">Traffic</CardTitle>
@@ -642,6 +453,7 @@ class Dashboard extends Component {
                     </ButtonToolbar>
                   </Col>
                 </Row>
+                 */}
                 <div className="chart-wrapper" style={{ height: 300 + 'px', marginTop: 40 + 'px' }}>
                   <Line data={mainChart} options={mainChartOpts} height={300} />
                 </div>

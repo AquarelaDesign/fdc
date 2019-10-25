@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // import { renderRoutes } from 'react-router-config';
 import { toast } from 'react-toastify'
+import Lottie from 'react-lottie';
 import 'react-toastify/dist/ReactToastify.css'
 import './App.scss';
+import * as animationData from './assets/json/1204-car.json'
 
 toast.configure({
   autoClose: 5000,
@@ -14,7 +16,23 @@ toast.configure({
   //transition: 'flip',
 })
 
-const loading = () => <div className="animated fadeIn pt-3 text-center">Carregando...</div>;
+const defaultOptions = {
+  loop: true,
+  autoplay: true, 
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice'
+  }
+}
+
+// const loading = () => <div className="animated fadeIn pt-3 text-center">Carregando...</div>
+
+const loading = () => <Lottie 
+                        options={defaultOptions}
+                        height={400}
+                        width={400}
+                        isStopped={false}
+                        isPaused={false}/>
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./containers/DefaultLayout'));
