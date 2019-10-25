@@ -1,9 +1,13 @@
-import React, { Component } from 'react';
-import { 
-  Container, 
-  Form, 
-  Input, 
-} from 'reactstrap';
+import React, { Component } from 'react'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import {
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+} from 'reactstrap'
 
 import api from '../../services/api'
 import logo from '../../assets/logo.png'
@@ -13,37 +17,48 @@ class Login extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { 
+    this.state = {
         email: '',
         senha: '',
-        rememberMe: false 
+        texto: '',
+        show: false,
+        rememberMe: false
     }
   }
 
   componentDidMount() {
     const email = localStorage.getItem('@fdc/email')
     const remember = localStorage.getItem('@fdc/rememberMe')
-    
-    this.setState({ rememberMe: remember === 'true' })
-    
-    if (this.state.rememberMe) {
-      this.setState({ email })
+
+    if (remember === 'true') {
+      this.setState({ email: email, rememberMe: true })
+    } else {
+      this.setState({ rememberMe: false })
     }
   }
 
-  async clickEsqueceuSenha() {
+  clickEsqueceuSenha() {
     console.log('clickEsqueceuSenha')
   }
 
-  async criaUsuario() {
+  criaUsuario() {
     console.log('criaUsuario')
   }
 
-  onChange(event) {
+  setShow() {
+    try {
+      this.setState({ texto: "" })
+      this.setState({ show: false })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async onChange(event) {
     const input = event.target
     const value = input.type === 'checkbox' ? input.checked : input.value
 
-    console.log('input', input.id, value)
+    console.log('onChange', input.type, input.checked, value, input)
 
     this.setState({ [input.id]: value })
   }
@@ -53,7 +68,7 @@ class Login extends Component {
 
     try {
       await api.post('/oapi/login', {
-        email: this.state.email, 
+        email: this.state.email,
         senha: this.state.senha
       })
       .then(res => {
@@ -63,26 +78,33 @@ class Login extends Component {
         localStorage.setItem('@fdc/token', token)
         localStorage.setItem('@fdc/oficina', JSON.stringify(oficina))
         localStorage.setItem('@fdc/rememberMe', this.state.rememberMe)
-  
+
         this.props.history.push('/home')
       })
 
     } catch (error) {
       const { response } = error
       if (response !== undefined) {
-        // addToast(response.data.errors[0], { appearance: 'error', autoDismiss: true })
-        console.log(response.data.errors[0])
+        //useToasts.add(response.data.errors[0], { appearance: 'error', autoDismiss: true })
+        // console.log(response.data.errors[0])
+        toast(response.data.errors[0], {type: 'error'})
       } else {
-        // addToast(error, { appearance: 'error', autoDismiss: true })
-        console.log('error', error)
+        this.setState({
+          texto: error,
+          show: true
+        })
+        //useToasts.add(error, { appearance: 'error', autoDismiss: true })
+        // console.log('error', error)
+        toast(error, {type: 'error'})
       }
     }
   }
 
   render() {
-    // const { email, rememberMe } = this.state
-    // const { handleSubmit } = this.props
-    
+    const { email, rememberMe } = this.state
+
+    console.log(rememberMe)
+
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -94,8 +116,8 @@ class Login extends Component {
                 <Input
                   className="login"
                   id="email"
-                  type="text"
-                  value={this.state.email}
+                  type="email"
+                  value={email}
                   placeholder="E-mail"
                   onChange={e => {this.onChange(e)}}
                 />
@@ -109,15 +131,22 @@ class Login extends Component {
                   onChange={e => {this.onChange(e)}}
                 />
 
-                <label className="ckbox">
-                  <input
+                <FormGroup check className="checkbox">
+                  <Input
+                    className="form-check-input"
                     type="checkbox"
+                    id="rememberMe"
                     name="rememberMe"
-                    checked={this.state.rememberMe}
+                    value={rememberMe}
                     onChange={e => {this.onChange(e)}}
                   />
-                  &nbsp;Lembrar dados de acesso
-                </label>
+                  <Label
+                    check
+                    className="form-check-label"
+                    htmlFor="rememberMe">
+                    Lembrar dados de acesso
+                  </Label>
+                </FormGroup>
 
                 <button className="btn1" type="submit">Acessar</button>
 
