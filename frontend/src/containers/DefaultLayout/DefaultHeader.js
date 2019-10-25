@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import { AppAsideToggler, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import { AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
+import logo from '../../assets/logo.png'
+import fdc from '../../assets/fdc.png'
 
 const propTypes = {
   children: PropTypes.node,
@@ -19,6 +19,39 @@ class DefaultHeader extends Component {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
 
+    return (
+      <React.Fragment>
+        <AppSidebarToggler className="d-lg-none" display="md" mobile />
+        <AppNavbarBrand
+          full={{ src: logo, width: 89, height: 25, alt: 'Ficha do Carro' }}
+          minimized={{ src: fdc, width: 30, height: 30, alt: 'FDC' }}
+        />
+        <AppSidebarToggler className="d-md-down-none" display="lg" />
+
+        <Nav className="ml-auto" navbar>
+          <NavItem className="d-md-down-none">
+            <NavLink to="#" className="nav-link">
+              <i className="icon-bell"></i>
+              <Badge pill color="danger">5</Badge>
+            </NavLink>
+          </NavItem>
+          <UncontrolledDropdown nav direction="down">
+            <DropdownToggle nav>
+              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem>mecanicabonilha@hotmail.com</DropdownItem>
+              <DropdownItem><i className="icon-settings"></i> Parâmetros da Oficina</DropdownItem>
+              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </Nav>
+        {/* <AppAsideToggler className="d-md-down-none" /> */}
+        {/* <AppAsideToggler className="d-lg-none" mobile /> */}
+      </React.Fragment>
+    )
+
+    /*
     return (
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
@@ -71,9 +104,10 @@ class DefaultHeader extends Component {
           </UncontrolledDropdown>
         </Nav>
         <AppAsideToggler className="d-md-down-none" />
-        {/*<AppAsideToggler className="d-lg-none" mobile />*/}
+        <AppAsideToggler className="d-lg-none" mobile />
       </React.Fragment>
-    );
+    )
+    */
   }
 }
 

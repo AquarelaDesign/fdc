@@ -6,15 +6,15 @@ import { mapToCssModules } from 'reactstrap/lib/utils';
 
 const propTypes = {
   header: PropTypes.string,
-  mainText: PropTypes.string,
   icon: PropTypes.string,
+  mainText: PropTypes.string,
   color: PropTypes.string,
-  variant: PropTypes.string,
-  footer: PropTypes.bool,
-  link: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
   cssModule: PropTypes.object,
+  variant: PropTypes.string,
+  footer: PropTypes.bool,
+  link: PropTypes.string,
 };
 
 const defaultProps = {
