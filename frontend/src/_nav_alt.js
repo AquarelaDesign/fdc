@@ -1,3 +1,53 @@
+import React, { useState, useEffect } from 'react'
+
+import api from './services/api'
+
+export default () => {
+  const [menu, setMenu] = useState({})
+
+  useEffect(() => {
+    const email = localStorage.getItem('@fdc/email')
+    const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
+
+    async function buscaMenu() {
+      const response = await api.post('/v01/busca', {
+        pservico: 'wficha',
+        pmetodo: 'menu',
+        pcodprg: '',
+        pemail: email,
+        params: {
+          widtrans: `${oficina.codemp}|1|1|${email}`,
+          wip: '192.168.50.138',
+          wseqaba: 0
+        }
+      })
+
+      if (response.data) {
+        console.log(response.data)
+      }
+    }
+
+    buscaMenu()
+
+  }, [])
+
+  return {
+    items: [
+      {
+        name: 'Home',
+        url: '/dashboard',
+        icon: 'icon-home',
+        badge: {
+          variant: 'info',
+          text: '*',
+        },
+      },
+    ],
+  }
+
+}
+
+/*
 export default {
   items: [
     {
@@ -11,52 +61,12 @@ export default {
     },
     {
       title: true,
-      name: 'FDC',
-      wrapper: {
-        element: '',
-        attributes: {}
+      name: 'Theme',
+      wrapper: {            // optional wrapper object
+        element: '',        // required valid HTML5 element tag
+        attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
       },
-      class: ''
-    },
-    { name: 'Passagens',   url: '/tfcpas',    icon: 'fa fa-flag', },
-    { name: 'Etiquetas',   url: '/etiquetas', icon: 'fa fa-tags', },
-    { name: 'Veículos',    url: '/tfcvei',    icon: 'fa fa-car', },
-    { name: 'Promoções',   url: '/tfcpro',    icon: 'fa fa-car', },
-    { name: 'Clientes',    url: '/tfcusu',    icon: 'fa fa-users', },
-    { name: 'Indicadores', url: '/tfcini',    icon: 'fa fa-line-chart', },
-    { name: 'Mensagens',   url: '/tfcmsg',    icon: 'fa fa-comments', },
-    { name: 'Monitor',     url: '/tfcmon',    icon: 'fa fa-tachometer', },
-    {
-      name: 'Estoque',
-      icon: 'fa fa-truck',
-      children: [
-        { name: 'Produtos',     url: '/tfcpec',    icon: 'fa fa-edit', },
-        { name: 'Movimentação', url: '/tfcest',    icon: 'fa fa-list', },
-      ],
-    },
-    {
-      name: 'Notas Fiscais',
-      icon: 'fa fa-file-text',
-      children: [
-        { name: 'Entrada',            url: '/tfcnfe',    icon: 'fa fa-sign-in', },
-        { name: 'Cancelar/Devolução', url: '/tfcnfs',    icon: 'fa fa-window-close', },
-        { name: 'Monitor',            url: '/tfcnfm',    icon: 'fa fa-tasks', },
-      ],
-    },
-    { name: 'Pagar/Receber',     url: '/tfcmon',    icon: 'fa fa-money', },
-    { name: 'Extração de Dados', url: '/tfcmon',    icon: 'fa fa-database', },
-
-    {
-      divider: true,
-    },
-    {
-      title: true,
-      name: 'CoreUI',
-      wrapper: {
-        element: '',
-        attributes: {}
-      },
-      class: ''
+      class: ''             // optional class names space delimited list for title item ex: "text-center"
     },
     {
       name: 'Colors',
@@ -295,5 +305,27 @@ export default {
         },
       ],
     },
+    {
+      name: 'Disabled',
+      url: '/dashboard',
+      icon: 'icon-ban',
+      attributes: { disabled: true },
+    },
+    {
+      name: 'Download CoreUI',
+      url: 'https://coreui.io/react/',
+      icon: 'icon-cloud-download',
+      class: 'mt-auto',
+      variant: 'success',
+      attributes: { target: '_blank', rel: "noopener" },
+    },
+    {
+      name: 'Try CoreUI PRO',
+      url: 'https://coreui.io/pro/react/',
+      icon: 'icon-layers',
+      variant: 'danger',
+      attributes: { target: '_blank', rel: "noopener" },
+    },
   ],
-};
+}
+*/
