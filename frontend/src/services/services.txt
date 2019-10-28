@@ -28,3 +28,16 @@ http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 &pdatini=01/10/2019
 &pdatfim=23/10/2019
 &psituac=TOD
+
+http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wsimporc
+?email=mecanicabonilha@hotmail.com
+&di=01/10/2019
+&df=31/10/2019
+&t=R
+
+http://fdc.procyon.com.br/wss/i/integra.php
+?prog=wsimporc
+&email=mecanicabonilha@hotmail.com
+&di=01/10/2019
+&df=31/10/2019
+&t=R

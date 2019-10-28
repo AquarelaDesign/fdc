@@ -13,6 +13,9 @@ const propTypes = {
 
 const defaultProps = {};
 
+const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
+const lgOficina = `http://fdc.procyon.com.br/wss/imagens/${oficina.e_mail}.jpg`
+
 class DefaultHeader extends Component {
   render() {
 
@@ -37,10 +40,10 @@ class DefaultHeader extends Component {
           </NavItem>
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={lgOficina} className="img-avatar" alt={oficina.e_mail} />
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem>mecanicabonilha@hotmail.com</DropdownItem>
+              <DropdownItem>{oficina.e_mail}</DropdownItem>
               <DropdownItem><i className="icon-settings"></i> Parâmetros da Oficina</DropdownItem>
               <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>

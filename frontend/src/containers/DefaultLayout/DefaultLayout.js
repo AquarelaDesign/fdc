@@ -2,7 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
-import Lottie from 'react-lottie';
+// import Lottie from 'react-lottie';
 
 import {
   AppAside,
@@ -23,16 +23,7 @@ import routes from '../../routes';
 
 import api from '../../services/api'
 
-import * as animationData from '../../assets/json/1204-car.json'
-
-const defaultOptions = {
-  loop: true,
-  autoplay: true, 
-  animationData: animationData,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice'
-  }
-}
+// import * as animationData from '../../assets/json/1204-car.json'
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -57,15 +48,25 @@ class DefaultLayout extends Component {
     validateToken(this.props)
   }
 
-  // loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
-  
+  /*
+  const defaultOptions = {
+    loop: true,
+    autoplay: true, 
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  }
+
   loading = () => <Lottie 
                     options={defaultOptions}
                     height={400}
                     width={400}
                     isStopped={false}
                     isPaused={false}/>
-
+  */
+ 
+  loading = () => <div className="animated fadeIn pt-1 text-center">Carregando...</div>
 
   signOut(e) {
     e.preventDefault()
@@ -81,7 +82,7 @@ class DefaultLayout extends Component {
           </Suspense>
         </AppHeader>
         <div className="app-body">
-          <AppSidebar fixed display="lg">
+          <AppSidebar minimized display="lg">
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>

@@ -21,7 +21,7 @@ export default {
     { name: 'Passagens',   url: '/tfcpas',    icon: 'fa fa-flag', },
     { name: 'Etiquetas',   url: '/etiquetas', icon: 'fa fa-tags', },
     { name: 'Veículos',    url: '/tfcvei',    icon: 'fa fa-car', },
-    { name: 'Promoções',   url: '/tfcpro',    icon: 'fa fa-car', },
+    { name: 'Promoções',   url: '/tfcpro',    icon: 'fa fa-star', },
     { name: 'Clientes',    url: '/tfcusu',    icon: 'fa fa-users', },
     { name: 'Indicadores', url: '/tfcini',    icon: 'fa fa-line-chart', },
     { name: 'Mensagens',   url: '/tfcmsg',    icon: 'fa fa-comments', },
