@@ -1,4 +1,8 @@
 import React, { Component, Suspense } from 'react'
+import api from '../../services/api'
+import Axios from 'axios'
+// import { element } from 'prop-types'
+
 import {
   CardColumns,
   Card,
@@ -11,30 +15,10 @@ import {
 import { Pie, Bar, Line, Doughnut } from 'react-chartjs-2'
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
-import * as moment from 'moment'
-import 'moment/locale/pt-br'
-// import { toast } from 'react-toastify'
-
 import { Etiquetas, IndicadorBarra } from '../../components'
+import { getEmail, dataInicial, dataFinal } from '../../globais'
 
-import api from '../../services/api'
-import Axios from 'axios'
-// import { element } from 'prop-types'
-
-const localIP = require('local-ip-url')
-const wIP = localIP('public') === '127.0.0.1' ? '192.168.50.138' : localIP('public')
-
-moment.locale('pt-BR')
-// Últimos 30 dias
-// const dataInicial = moment().subtract(30, 'days').format('L');
-// const dataFinal   = moment().format('L');
-
-// Período do Mês
-const dataInicial = moment().startOf('month').format('L');
-const dataFinal   = moment().endOf('month').format('L');
-
-const email = localStorage.getItem('@fdc/email')
-const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
+const email = getEmail()
 
 const Icones = {
   CT: "fa fa-credit-card",
@@ -45,18 +29,32 @@ const Icones = {
   DE: "fa fa-handshake-o",
 }
 
+const divBlock = {
+  display: 'block'
+}
+
+const divNone = {
+  display: 'none'
+}
+
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
-    this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
 
     this.state = {
       dropdownOpen: false,
-      radioSelected: 2,
+      mostraValores: false,
+      styleLoader: divNone,
       ttresetq: [{
-        qtetqn: 0, qtetqp: 0, qtetqtot: 0, qtetqv: 0, qtperd: 0, qtreal: 0
+        qtetqn: 0, 
+        qtetqp: 0, 
+        qtetqtot: 0, 
+        qtetqv: 0, 
+        qtperd: 0, 
+        qtreal: 0
       }],
       ttfccpvl: [],
       ttpagto: [],
@@ -64,6 +62,7 @@ class Dashboard extends Component {
       ttresumo: [],
       ttretorno: [],
       ttserv: [],
+      resContas: [],
       legendas: {},
       cores: {},
       grData: [],
@@ -87,251 +86,261 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    function calculaNotas(ListaDocs, state) {
-      // console.log('ListaDocs', ListaDocs)
-  
-      let totais = {}
-          totais.canval = 0
-          totais.cancel = 0
-          totais.inu = 0
-          totais.dev = 0
-          totais.imp = 0
-          totais.pas = 0
-          totais.rps = 0
-          totais.nfse = 0
-          totais.err = 0
-          totais.orc = 0
-          totais.val = 0
-          totais.geral = 0
-      
-      let legendas = {}
-          legendas.canval = 'Cancelada com DANFE'
-          legendas.cancel = 'Cancelado'
-          legendas.inu = 'Inutilizada'
-          legendas.dev = 'NFe Devolução'
-          legendas.imp = 'NFe Importada'
-          legendas.pas = 'Passagem'
-          legendas.rps = 'RPS'
-          legendas.nfse = 'NFSe'
-          legendas.err = 'Com Erro'
-          legendas.orc = 'Orçamento'
-          legendas.val = 'NFe'
-          legendas.geral = 'Total'
+    try {
+      this.startPreloader()
 
-      let cores = {}
-          cores.canval = '#FF6384'
-          cores.cancel = '#FF0000'
-          cores.inu = '#000000'
-          cores.dev = '#191970'
-          cores.imp = '#4682B4'
-          cores.pas = '#FFCE56'
-          cores.rps = '#00FFFF'
-          cores.nfse = '#008080'
-          cores.err = '#800000'
-          cores.orc = '#FF8C00'
-          cores.val = '#00FF00'
-          cores.geral = '#FFFFFF'
-  
-      ListaDocs.forEach((value, key) => {
-        // console.log(`Tipo: ${value.Tipo}, Situacao: ${value.Situacao}`)
-        const _tipo = value.TipoNF;
-  
-        if (value.Tipo === 'CAN' || value.Situacao === 'C') { // Cancelado
-          if (value.Tipo === 'VAL') {
-            totais.canval++
+      function calculaNotas(ListaDocs, state) {
+        let totais = {}
+            totais.canval = 0
+            totais.cancel = 0
+            totais.inu = 0
+            totais.dev = 0
+            totais.imp = 0
+            totais.pas = 0
+            totais.rps = 0
+            totais.nfse = 0
+            totais.err = 0
+            totais.orc = 0
+            totais.val = 0
+            totais.geral = 0
+        
+        let legendas = {}
+            legendas.canval = 'Cancelada com DANFE'
+            legendas.cancel = 'Cancelado'
+            legendas.inu = 'Inutilizada'
+            legendas.dev = 'NFe Devolução'
+            legendas.imp = 'NFe Importada'
+            legendas.pas = 'Passagem'
+            legendas.rps = 'RPS'
+            legendas.nfse = 'NFSe'
+            legendas.err = 'Com Erro'
+            legendas.orc = 'Orçamento'
+            legendas.val = 'NFe'
+            legendas.geral = 'Total'
+
+        let cores = {}
+            cores.canval = '#FF6384'
+            cores.cancel = '#FF0000'
+            cores.inu = '#000000'
+            cores.dev = '#191970'
+            cores.imp = '#4682B4'
+            cores.pas = '#FFCE56'
+            cores.rps = '#00FFFF'
+            cores.nfse = '#008080'
+            cores.err = '#800000'
+            cores.orc = '#FF8C00'
+            cores.val = '#00FF00'
+            cores.geral = '#FFFFFF'
+    
+        ListaDocs.forEach((value, key) => {
+          const _tipo = value.TipoNF;
+    
+          if (value.Tipo === 'CAN' || value.Situacao === 'C') { // Cancelado
+            if (value.Tipo === 'VAL') {
+              totais.canval++
+              totais.geral++
+            } else {
+              totais.cancel++
+              totais.geral++
+            }
+          } else if (value.Situacao === 'INU') {
+            totais.inu++
             totais.geral++
           } else {
-            totais.cancel++
-            totais.geral++
-          }
-        } else if (value.Situacao === 'INU') {
-          totais.inu++
-          totais.geral++
-        } else {
-          switch(value.Tipo) {
-            case '': 
-              if (_tipo === 'DEV') {
-                if (value.Situacao === 'ERR') {
-                  totais.err++
-                } else {
-                  totais.dev++                       
-                }
-                totais.geral++
-              } else if (_tipo === 'NFE') {
-                totais.imp++
-                totais.geral++
-              } else {
-                totais.geral++
-              }
-              break
-            case 'PAS': 
-              if (_tipo === 'NFSE') {
-                if (value.SerieNFSe === 'RP') {
-                  totais.rps++
+            switch(value.Tipo) {
+              case '': 
+                if (_tipo === 'DEV') {
+                  if (value.Situacao === 'ERR') {
+                    totais.err++
+                  } else {
+                    totais.dev++                       
+                  }
+                  totais.geral++
+                } else if (_tipo === 'NFE') {
+                  totais.imp++
                   totais.geral++
                 } else {
-                  totais.nfse++
                   totais.geral++
                 }
-              } else {
-                totais.pas++
+                break
+              case 'PAS': 
+                if (_tipo === 'NFSE') {
+                  if (value.SerieNFSe === 'RP') {
+                    totais.rps++
+                    totais.geral++
+                  } else {
+                    totais.nfse++
+                    totais.geral++
+                  }
+                } else {
+                  totais.pas++
+                  totais.geral++
+                }
+                break
+              case 'INU': 
+                totais.inu++
                 totais.geral++
-              }
-              break
-            case 'INU': 
-              totais.inu++
-              totais.geral++
-              break
-            case 'ERR': 
-              totais.err++
-              totais.geral++
-              break
-            case 'DEV': 
-              totais.dev++
-              totais.geral++
-              break
-            case 'VAL': 
-              if (!value.chaNFe) {
+                break
+              case 'ERR': 
                 totais.err++
                 totais.geral++
-              } else {
-                totais.val++
+                break
+              case 'DEV': 
+                totais.dev++
                 totais.geral++
-              }
-              break
-            case 'ORC': 
-              totais.orc++
-              totais.geral++
-              break
-            default:  
-              totais.geral++
-              break
+                break
+              case 'VAL': 
+                if (!value.chaNFe) {
+                  totais.err++
+                  totais.geral++
+                } else {
+                  totais.val++
+                  totais.geral++
+                }
+                break
+              case 'ORC': 
+                totais.orc++
+                totais.geral++
+                break
+              default:  
+                totais.geral++
+                break
+            }
           }
-        }
-  
-      })
-
-      state.setState({ totais: totais, legendas: legendas, cores: cores })
-      return totais
-    }
-
-    async function buscaEtqs(state) {
-      try {
-        await api.post('/v01/busca', {
-          pservico: 'wfcpas',
-          pmetodo: 'ResumoEtiquetas',
-          pcodprg: 'TFCINI',
-          pemail: email,
-          params: {
-            widtrans: `${oficina.codemp}|1|1|${email}`,
-            wip: wIP,
-            wseqaba: 0,
-          },
-        }).then(response => {
-          if (response.status === 200) {
-            // console.log('data', response.data.data.ttresetq)
-            state.setState({ ttresetq: response.data.data.ttresetq })
-          } else {
-            // console.log('Consultando Etq')
-            buscaEtqs(state)
-          }
-        })
-      } catch (error) {
-        const { response } = error
-        if (response !== undefined) {
-          // toast(response.data.errors[0], {type: 'error'})
-          // console.log(response.data.errors[0], {type: 'error'})
-        } else {
-          // toast(error, {type: 'error'})
-          // console.log(error, {type: 'error'})
-        }
-      }
-    }
-
-    async function buscaPas(state) {
-      try {
-        await api.post('/v01/busca', {
-          pservico: 'wfcpas',
-          pmetodo: 'ListaPassagens',
-          pcodprg: 'TFCMON',
-          pemail: email,
-          params: {
-            pdatini: dataInicial,
-            pdatfim: dataFinal,
-            psituac: 'TOD',
-            widtrans: `${oficina.codemp}|1|1|${email}`,
-            wip: wIP,
-            wseqaba: 0,
-          }
-        }).then(response => {
-          if (response.status === 200) {
-            // console.log('data1', response.data.data)
-            const { ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv, } = response.data.data
-            state.setState({ ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv })
-          } else {
-            // console.log('Consultando Pas')
-            buscaPas(state)
-          }
-        })
-      } catch (error) {
-        const { response } = error
-        if (response !== undefined) {
-          // toast(response.data.errors[0], {type: 'error'})
-          // console.log(response.data.errors[0], {type: 'error'})
-        } else {
-          // toast(error, {type: 'error'})
-          // console.log(error, {type: 'error'})
-        }
-      }
-    }
-
-    const url = `http://fdc.procyon.com.br/wss/i/integra.php?prog=wsimporc&email=${email}&di=${dataInicial}&df=${dataFinal}&t=R`
     
-    async function buscaNotas(state) {
-      try {
-        await Axios.get(
-          url
-        ).then(response => {
-          if (response.status === 200) {
-            // console.log('response', response.data.Lista.ListaDocs)
-            // state.setState({ ListaDocs: response.data.Lista.ListaDocs })
-            const { ListaDocs } = response.data.Lista
-            calculaNotas(ListaDocs, state)
-          } else {
-            // console.log('Consultando Notas')
-            buscaNotas(state)
-          }
         })
-      } catch (error) {
-        const { response } = error
-        if (response !== undefined) {
-          // toast(response.data.errors[0], {type: 'error'})
-          // console.log('err1', response.data.errors[0], {type: 'error'})
-        } else {
-          // toast(error, {type: 'error'})
-          // console.log('err2', error, {type: 'error'})
+
+        state.setState({ totais: totais, legendas: legendas, cores: cores })
+        return totais
+      }
+
+      async function buscaEtqs(state) {
+        try {
+          await api.post('/v01/busca', {
+            pservico: 'wfcpas',
+            pmetodo: 'ResumoEtiquetas',
+            pcodprg: 'TFCINI',
+            pemail: email,
+          }).then(response => {
+            if (response.status === 200) {
+              state.setState({ ttresetq: response.data.data.ttresetq })
+            } else {
+              buscaEtqs(state)
+            }
+          })
+        } catch (error) {
+          const { response } = error
+          if (response !== undefined) {
+          } else {
+            console.log(error, {type: 'error'})
+          }
         }
       }
-      state.montaGrafico()
-    }
 
-    buscaEtqs(this)
-    buscaPas(this)
-    buscaNotas(this)
+      async function buscaPas(state) {
+        try {
+          await api.post('/v01/busca', {
+            pservico: 'wfcpas',
+            pmetodo: 'ListaPassagens',
+            pcodprg: 'TFCMON',
+            pemail: email,
+            params: {
+              pdatini: dataInicial,
+              pdatfim: dataFinal,
+              psituac: 'TOD',
+            }
+          }).then(response => {
+            if (response.status === 200) {
+              const { ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv, } = response.data.data
+              state.setState({ ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv })
+            } else {
+              buscaPas(state)
+            }
+          })
+        } catch (error) {
+          const { response } = error
+          if (response !== undefined) {
+            console.log(response.data.errors[0], {type: 'error'})
+          } else {
+            console.log(error, {type: 'error'})
+          }
+        }
+      }
+
+      async function buscaContas(state) {
+        try {
+          await api.post('/v01/busca', {
+            pservico: 'wfcfin',
+            pmetodo: 'ListaResumo',
+            pcodprg: 'TFCFIN',
+            pemail: email,
+            params: {
+              pdtini: dataInicial,
+              pdtfim: dataFinal,
+              ptipcon: 'A',
+            }
+          }).then(response => {
+            if (response.status === 200) {
+              const { ttresumo } = response.data.data
+              state.setState({ resContas: ttresumo })
+              console.log('ttresumo', ttresumo)
+            } else {
+              buscaContas(state)
+            }
+          })
+        } catch (error) {
+          const { response } = error
+          if (response !== undefined) {
+            console.log(response.data.errors[0], {type: 'error'})
+          } else {
+            console.log(error, {type: 'error'})
+          }
+        }
+      }
+
+      const uri = 'http://fdc.procyon.com.br/wss/i/integra.php'
+      const url = `${uri}?prog=wsimporc&email=${email}&di=${dataInicial}&df=${dataFinal}&t=R`
+      
+      async function buscaNotas(state) {
+        try {
+          await Axios.get(
+            url
+          ).then(response => {
+            if (response.status === 200) {
+              const { ListaDocs } = response.data.Lista
+              calculaNotas(ListaDocs, state)
+            } else {
+              buscaNotas(state)
+            }
+          })
+        } catch (error) {
+          const { response } = error
+          if (response !== undefined) {
+            console.log('err1', response.data.errors[0], {type: 'error'})
+          } else {
+            console.log('err2', error, {type: 'error'})
+          }
+        }
+        state.montaGrafico()
+      }
+
+      buscaEtqs(this)
+      buscaPas(this)
+      buscaContas(this)
+      buscaNotas(this)
+    }
+    catch (e) {
+      console.log('Erro:', e)
+    }
+    finally {
+      this.endPreloader()
+    }
     
   }
-
-  // monta = () => this.montaGrafico()
 
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
-    })
-  }
-
-  onRadioBtnClick(radioSelected) {
-    this.setState({
-      radioSelected: radioSelected,
     })
   }
 
@@ -374,8 +383,6 @@ class Dashboard extends Component {
     let data = []
     let cor = []
     
-    // console.log(totais, legendas) 
-
     for (let [key, value] of Object.entries(totais)) {
       if (value > 0 && key !== 'geral') {
         for (let [k, v] of Object.entries(legendas)) {
@@ -399,10 +406,27 @@ class Dashboard extends Component {
     this.setState({ grData: data, grLabels: labels, grCores: cor })
   }
 
+  startPreloader() {
+    this.setState({ styleLoader: divBlock })
+  }
+ 
+  endPreloader() {
+    this.setState({ styleLoader: divNone })
+  }
+
   loading = () => <div className="animated fadeIn pt-1 text-center">Carregando...</div>
 
   render() {
-    const { ttresetq, ttresumo, ttpagto, grData, grLabels, grCores } = this.state
+    const { 
+      ttresetq, 
+      ttresumo, 
+      ttpagto, 
+      grData, 
+      grLabels, 
+      grCores,
+      styleLoader,
+      mostraValores,
+    } = this.state
     
     try {
       const Resetq = ttresetq[0]
@@ -480,6 +504,9 @@ class Dashboard extends Component {
                   
       return (
         <div className="animated fadeIn">
+          <div style={styleLoader}>
+            Buscando dados...
+          </div>
           {/* Etiquetas */}
           <Suspense fallback={this.loading()}>          
             <Row>
@@ -552,6 +579,7 @@ class Dashboard extends Component {
             </Row>
           </Suspense>
 
+          {/* Passagens */}
           <Suspense fallback={this.loading()}>
             <Card>
               <CardBody>
@@ -565,9 +593,8 @@ class Dashboard extends Component {
                       </strong>
                       &nbsp;Passagens
                       <strong>
-                        &nbsp;
-                        {Resumo !== undefined ?
-                          this.retValor(Resumo.vlpec, 'currency') : 'R$ 0,00'}
+                        {Resumo !== undefined && mostraValores ?
+                          '&nbsp;'+this.retValor(Resumo.vlpec, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           this.retValor(Resumo.perpec, 'decimal') : '0,00'}
@@ -589,9 +616,8 @@ class Dashboard extends Component {
                       </strong>
                       &nbsp;Passagens
                       <strong>
-                        &nbsp;
-                        {Resumo !== undefined ?
-                          this.retValor(Resumo.vlserv, 'currency') : 'R$ 0,00'}
+                        {Resumo !== undefined && mostraValores ?
+                          '&nbsp;'+this.retValor(Resumo.vlserv, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           this.retValor(Resumo.perserv, 'decimal') : '0,00'}
@@ -613,9 +639,8 @@ class Dashboard extends Component {
                       </strong>
                       &nbsp;Passagens
                       <strong>
-                        &nbsp;
-                        {Resumo !== undefined ?
-                          this.retValor(Resumo.vltotal, 'currency') : 'R$ 0,00'}
+                        {Resumo !== undefined && mostraValores ?
+                          '&nbsp;'+this.retValor(Resumo.vltotal, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           '100,00' : '0,00'}
@@ -635,8 +660,9 @@ class Dashboard extends Component {
 
           <Suspense fallback={this.loading()}>          
             <CardColumns className="cols-2">
+              {/* Recebimentos */}
               <Card>
-              <CardHeader>
+                <CardHeader>
                   Recebimentos
                   <div className="card-header-actions">
                     <a href="/dashboard" className="card-header-action">
@@ -646,21 +672,19 @@ class Dashboard extends Component {
                 </CardHeader>
                 <CardBody>
                   <ul>
-
                     {ttpagto.map(pagto => (
                       <IndicadorBarra
                         key={pagto.tippag}
                         icon={Icones[pagto.tippag]}
                         title={pagto.despag}
-                        value={pagto.valor.toString()}
+                        value={ mostraValores ? pagto.valor.toString() : ''}
                         percent={pagto.perc.toString()}
                       />
                     ))}
-
                   </ul>
                 </CardBody>
               </Card>
-
+              {/* Documentos */}
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
@@ -676,7 +700,6 @@ class Dashboard extends Component {
                   </div>
                 </CardBody>
               </Card>
-
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
@@ -685,7 +708,6 @@ class Dashboard extends Component {
                   </div>
                 </CardBody>
               </Card>
-
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
@@ -694,7 +716,6 @@ class Dashboard extends Component {
                   </div>
                 </CardBody>
               </Card>
-
 
             </CardColumns>
           </Suspense>

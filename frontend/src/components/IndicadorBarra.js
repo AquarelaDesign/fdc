@@ -31,12 +31,16 @@ class IndicadorBarra extends Component {
           <i className={`${icon} progress-group-icon`}></i>
           <span className="title">{title}</span>
           <span className="ml-auto font-weight-bold">
-            {new Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            }).format(value)}
+            {
+              value !== '' ?
+              new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }).format(value)
+              : ''
+            }
             <span className="text-muted small">
               &nbsp;(
               {new Intl.NumberFormat('pt-BR', {

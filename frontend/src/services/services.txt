@@ -1,3 +1,4 @@
+/*** Menu ***/
 http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 ?pservico=wficha
 &pmetodo=menu
@@ -8,9 +9,11 @@ http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 &pcodprg=
 &pemail=mecanicabonilha@hotmail.com
 
+/*** Menu ***/
 http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 ?pservico=wfcfin
-&pmetodo=IniciaListas&rand=371340
+&pmetodo=IniciaLista
+s&rand=371340
 &widtrans=BO|1|1|mecanicabonilha@hotmail.com
 &wip=192.168.50.138
 &wseqaba=1
@@ -29,15 +32,39 @@ http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 &pdatfim=23/10/2019
 &psituac=TOD
 
-http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wsimporc
-?email=mecanicabonilha@hotmail.com
-&di=01/10/2019
-&df=31/10/2019
-&t=R
-
+/*** Documentos Fiscais ***/
 http://fdc.procyon.com.br/wss/i/integra.php
 ?prog=wsimporc
 &email=mecanicabonilha@hotmail.com
 &di=01/10/2019
 &df=31/10/2019
 &t=R
+
+/*** Contas Pagar/Receber ***/
+http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
+?pservico=wfcfin
+&pmetodo=listaTitulos
+&rand=293665
+&widtrans=undefined|undefined|undefined|
+&wip=192.168.50.138
+&wseqaba=3
+&pcodprg=TFCFIN
+&pemail=mecanicabonilha@hotmail.com
+&pdtini=01/10/2019
+&pdtfim=29/10/2019
+&ptipcon=A
+
+/*** Resumo Contas Pagar/Receber ***/
+http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
+?pservico=wfcfin
+&pmetodo=ListaResumo
+&rand=609880
+&widtrans=undefined|undefined|undefined|
+&wip=192.168.50.138
+&wseqaba=3
+&pcodprg=TFCFIN
+&pemail=mecanicabonilha@hotmail.com
+&pdtini=01/10/2019
+&pdtfim=29/10/2019
+&ptipcon=A
+
