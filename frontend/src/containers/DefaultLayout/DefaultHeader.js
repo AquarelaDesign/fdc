@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
+import { 
+  Link,
+  Badge,
+  UncontrolledDropdown, 
+  DropdownItem, 
+  DropdownMenu, 
+  DropdownToggle, 
+  Nav, 
+  NavItem,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import { AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
@@ -17,6 +31,19 @@ const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
 const lgOficina = `http://fdc.procyon.com.br/wss/imagens/${oficina.e_mail}.jpg`
 
 class DefaultHeader extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      path: '',
+    }
+  }
+
+  acessa(e) {
+    e.preventDefault()
+    console.log('acessa', e.keyCode)
+    // this.setState({ path: e.nam })
+  }
+
   render() {
 
     // eslint-disable-next-line
@@ -32,12 +59,28 @@ class DefaultHeader extends Component {
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
         <Nav className="ml-auto" navbar>
+          {/* 
           <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link">
               <i className="icon-bell"></i>
               <Badge pill color="danger">5</Badge>
             </NavLink>
           </NavItem>
+          */}
+
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText><i className="fa fa-sign-in"></i></InputGroupText>
+            </InputGroupAddon>
+            <Input 
+              type="text" 
+              id="acesso" 
+              name="acesso" 
+              placeholder="Acesso Rápido" 
+              onKeyDown={e => this.acessa(e)}
+            />
+          </InputGroup>
+
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
               <img src={lgOficina} className="img-avatar" alt={oficina.e_mail} />

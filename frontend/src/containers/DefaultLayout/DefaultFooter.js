@@ -15,7 +15,8 @@ class DefaultFooter extends Component {
 
     return (
       <React.Fragment>
-        <span><a href="https://www.fichadocarro.com.br">Ficha do Carro</a> &copy; 2019 procyon.</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span><a href="https://www.fichadocarro.com.br">Ficha do Carro</a> &copy; 2019 procyon</span>
         <span className="ml-auto">Powered by <a href="http://www.procyon.com.br">Procyon</a></span>
       </React.Fragment>
     );

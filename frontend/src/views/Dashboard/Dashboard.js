@@ -12,10 +12,11 @@ import {
   Progress,
   Row,
 } from 'reactstrap'
-import { Pie, Bar, Line, Doughnut } from 'react-chartjs-2'
+// import { Pie, Bar, Line, Doughnut } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
-import { Etiquetas, IndicadorBarra } from '../../components'
+import { Etiquetas, IndicadorBarra, IndicadorSimples } from '../../components'
 import { getEmail, dataInicial, dataFinal } from '../../globais'
 
 const email = getEmail()
@@ -39,6 +40,8 @@ const divNone = {
 
 
 class Dashboard extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props);
 
@@ -46,8 +49,9 @@ class Dashboard extends Component {
 
     this.state = {
       dropdownOpen: false,
-      mostraValores: false,
+      mostraValores: true,
       styleLoader: divNone,
+      hGrafDocs: { height: 388 },
       ttresetq: [{
         qtetqn: 0, 
         qtetqp: 0, 
@@ -62,12 +66,23 @@ class Dashboard extends Component {
       ttresumo: [],
       ttretorno: [],
       ttserv: [],
-      resContas: [],
       legendas: {},
       cores: {},
-      grData: [],
-      grLabels: [],
-      grCores: [],
+      grDocs: [{
+        data: [],
+        labels: [],
+        cores: [],
+      }],
+      grContas: [{
+        data: [],
+        labels: [],
+        cores: [],
+      }],
+      resContas: [],
+      totpag: 0,
+      totrec: 0,
+      qtrec: 0,
+      qtpag: 0,
       totais: [{
         canval: 0,
         cancel: 0,
@@ -87,6 +102,8 @@ class Dashboard extends Component {
 
   componentDidMount() {
     try {
+      this._isMounted = true
+
       this.startPreloader()
 
       function calculaNotas(ListaDocs, state) {
@@ -282,8 +299,18 @@ class Dashboard extends Component {
           }).then(response => {
             if (response.status === 200) {
               const { ttresumo } = response.data.data
-              state.setState({ resContas: ttresumo })
-              console.log('ttresumo', ttresumo)
+              // state.setState({ resContas: ttresumo })
+              // console.table(ttresumo)
+              
+              ttresumo.forEach((value, key) => {
+                state.setState({ 
+                  totpag: state.state.totpag + value.totpag,
+                  totrec: state.state.totrec + value.totrec,
+                  qtpag: state.state.qtpag + value.qtpag,
+                  qtrec: state.state.qtrec + value.qtrec
+                })
+                // console.log(`${value.dtvcto};${value.qtpag};${value.totpag};${value.qtrec};${value.totrec};`)
+              })
             } else {
               buscaContas(state)
             }
@@ -321,7 +348,7 @@ class Dashboard extends Component {
             console.log('err2', error, {type: 'error'})
           }
         }
-        state.montaGrafico()
+        state.montaGraficoDocs()
       }
 
       buscaEtqs(this)
@@ -335,7 +362,10 @@ class Dashboard extends Component {
     finally {
       this.endPreloader()
     }
-    
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   toggle() {
@@ -376,7 +406,7 @@ class Dashboard extends Component {
     }
   }
 
-  montaGrafico() {
+  montaGraficoDocs() {
     const { totais, legendas, cores } = this.state
     
     let labels = []
@@ -401,9 +431,15 @@ class Dashboard extends Component {
         
         data.push(value)
       }
-    }    
+    }
 
-    this.setState({ grData: data, grLabels: labels, grCores: cor })
+    const grDocs = { data, labels, cores: cor,
+    }
+    this.setState({ grDocs: grDocs })
+
+//    const height = document.getElementById('chartDocs').clientHeight
+//    const clRec = { height: height }
+//    this.setState({ hGrafDocs: clRec })
   }
 
   startPreloader() {
@@ -418,47 +454,30 @@ class Dashboard extends Component {
 
   render() {
     const { 
-      ttresetq, 
-      ttresumo, 
-      ttpagto, 
-      grData, 
-      grLabels, 
-      grCores,
-      styleLoader,
-      mostraValores,
+      ttresetq, ttresumo, ttpagto, 
+      grDocs, hGrafDocs,
+      styleLoader, mostraValores,
+      totpag, totrec,
     } = this.state
+
+    // console.log('Contas', totpag, totrec, qtpag, qtrec)
     
     try {
       const Resetq = ttresetq[0]
       const Resumo = ttresumo[0]
-
+      /*
       const pie = {
-        labels: grLabels,
+        labels: grDocs.labels,
         datasets: [
           {
-            data: grData,
-            backgroundColor: grCores,
-            hoverBackgroundColor: grCores,
+            data: grDocs.data,
+            backgroundColor: grDocs.cores,
+            hoverBackgroundColor: grDocs.cores,
           }],
       }
       
-      const bar = {
-        labels: grLabels,
-        datasets: [
-          {
-            label: 'Documentos',
-            backgroundColor: 'rgba(0,0,205,0.2)',
-            borderColor: 'rgba(131,111,255,1)',
-            borderWidth: 1,
-            hoverBackgroundColor: 'rgba(0,0,205,0.4)',
-            hoverBorderColor: 'rgba(131,111,255,1)',
-            data: grData,
-          },
-        ],
-      }
-
       const line = {
-        labels: grLabels,
+        labels: grDocs.labels,
         datasets: [
           {
             label: 'Documentos',
@@ -479,29 +498,47 @@ class Dashboard extends Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: grData,
+            data: grDocs.data,
           },
         ],
-      };
+      }
       
       const doughnut = {
-        labels: grLabels,
+        labels: grDocs.labels,
         datasets: [
           {
-            data: grData,
-            backgroundColor: grCores,
-            hoverBackgroundColor: grCores,
+            data: grDocs.data,
+            backgroundColor: grDocs.cores,
+            hoverBackgroundColor: grDocs.cores,
           }],
-      };
-            
+      }
+      */
+      const bar = {
+        labels: grDocs.labels,
+        datasets: [
+          {
+            label: '',
+            backgroundColor: 'rgba(0,0,205,0.2)',
+            borderColor: 'rgba(131,111,255,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(0,0,205,0.4)',
+            hoverBorderColor: 'rgba(131,111,255,1)',
+            data: grDocs.data,
+          },
+        ],
+      }
+
       const options = {
+        label: {
+          display: false,
+        },
         tooltips: {
           enabled: false,
           custom: CustomTooltips
         },
         maintainAspectRatio: false
       }
-                  
+      
       return (
         <div className="animated fadeIn">
           <div style={styleLoader}>
@@ -509,79 +546,89 @@ class Dashboard extends Component {
           </div>
           {/* Etiquetas */}
           <Suspense fallback={this.loading()}>          
-            <Row>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-gray-700"
-                  icon="fa fa-tags"
-                  mainText="Abertas"
-                  color="secondary"
-                  value={Resetq.qtetqtot.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-success"
-                  icon="fa fa-check-square-o"
-                  mainText="Normais"
-                  color="secondary"
-                  value={Resetq.qtetqn.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-warning"
-                  icon="fa fa-exclamation-triangle"
-                  mainText="Próximas"
-                  color="secondary"
-                  value={Resetq.qtetqp.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-danger"
-                  icon="fa fa-times"
-                  mainText="Vencidas"
-                  color="secondary"
-                  value={Resetq.qtetqv.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-primary"
-                  icon="fa fa-thumbs-up"
-                  mainText="Efetuadas"
-                  color="secondary"
-                  value={Resetq.qtreal.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-              <Col xs="12" sm="4" lg="2">
-                <Etiquetas
-                  className="text-white bg-dark"
-                  icon="fa fa-thumbs-down"
-                  mainText="Perdidas"
-                  color="secondary"
-                  value={Resetq.qtperd.toString()}
-                  link="#/charts"
-                  footer
-                />
-              </Col>
-            </Row>
+            <Card>
+              <CardHeader>
+                Etiquetas
+              </CardHeader>
+              <CardBody>
+                <Row>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-gray-700"
+                      icon="fa fa-tags"
+                      mainText="Abertas"
+                      color="secondary"
+                      value={Resetq.qtetqtot.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-success"
+                      icon="fa fa-check-square-o"
+                      mainText="Normais"
+                      color="secondary"
+                      value={Resetq.qtetqn.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-warning"
+                      icon="fa fa-exclamation-triangle"
+                      mainText="Próximas"
+                      color="secondary"
+                      value={Resetq.qtetqp.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-danger"
+                      icon="fa fa-times"
+                      mainText="Vencidas"
+                      color="secondary"
+                      value={Resetq.qtetqv.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-primary"
+                      icon="fa fa-thumbs-up"
+                      mainText="Efetuadas"
+                      color="secondary"
+                      value={Resetq.qtreal.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                  <Col xs="12" sm="4" lg="2">
+                    <Etiquetas
+                      className="text-white bg-dark"
+                      icon="fa fa-thumbs-down"
+                      mainText="Perdidas"
+                      color="secondary"
+                      value={Resetq.qtperd.toString()}
+                      link="#/charts"
+                      footer
+                    />
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
           </Suspense>
 
-          {/* Passagens */}
+          {/* Indicadores */}
           <Suspense fallback={this.loading()}>
             <Card>
+              <CardHeader>
+                Indicadores
+              </CardHeader>
               <CardBody>
                 <Row className="text-center">
                   <Col sm={12} md className="mb-sm-2 mb-0">
@@ -594,7 +641,7 @@ class Dashboard extends Component {
                       &nbsp;Passagens
                       <strong>
                         {Resumo !== undefined && mostraValores ?
-                          '&nbsp;'+this.retValor(Resumo.vlpec, 'currency') : ''}
+                          ' '+this.retValor(Resumo.vlpec, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           this.retValor(Resumo.perpec, 'decimal') : '0,00'}
@@ -607,7 +654,7 @@ class Dashboard extends Component {
                         />
                     </div>
                   </Col>
-                  <Col sm={12} md className="mb-sm-2 mb-0 d-md-down-none">
+                  <Col sm={12} md className="mb-sm-2 mb-0">
                     <div className="callout callout-Light">
                       <div className="h5">Serviços</div>
                       <strong className="h6">
@@ -617,7 +664,7 @@ class Dashboard extends Component {
                       &nbsp;Passagens
                       <strong>
                         {Resumo !== undefined && mostraValores ?
-                          '&nbsp;'+this.retValor(Resumo.vlserv, 'currency') : ''}
+                          ' '+this.retValor(Resumo.vlserv, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           this.retValor(Resumo.perserv, 'decimal') : '0,00'}
@@ -640,7 +687,7 @@ class Dashboard extends Component {
                       &nbsp;Passagens
                       <strong>
                         {Resumo !== undefined && mostraValores ?
-                          '&nbsp;'+this.retValor(Resumo.vltotal, 'currency') : ''}
+                          ' '+this.retValor(Resumo.vltotal, 'currency') : ''}
                         &nbsp;(
                         {Resumo !== undefined ?
                           '100,00' : '0,00'}
@@ -653,6 +700,40 @@ class Dashboard extends Component {
                       />
                     </div>
                   </Col>
+                  <Col sm={12} md className="mb-sm-2 mb-0">
+                    <div className="callout callout-Light">
+                      <div className="h5">Ticket Médio</div>
+                      <strong>
+                        {Resumo !== undefined && mostraValores ?
+                          this.retValor(Resumo.tikmed, 'currency') : ''}
+                      </strong>
+                      <Progress
+                        className="progress-xs mt-2"
+                        color="warning"
+                        value={Resumo !== undefined ? 100 : 0}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+                <Row className="text-center">
+                  <Col sm={12} md className="mb-sm-2 mb-0">
+                      <IndicadorSimples
+                        header={totpag.toString()}
+                        mainText="Contas a Pagar" 
+                        icon="fa fa-bank" 
+                        color="danger" 
+                        variant="1" 
+                      />
+                    </Col>
+                  <Col sm={12} md className="mb-sm-2 mb-0">
+                    <IndicadorSimples
+                      header={totrec.toString()}
+                      mainText="Contas a Receber" 
+                      icon="fa fa-money" 
+                      color="success" 
+                      variant="1" 
+                    />
+                  </Col>
                 </Row>
               </CardBody>
             </Card>
@@ -661,7 +742,7 @@ class Dashboard extends Component {
           <Suspense fallback={this.loading()}>          
             <CardColumns className="cols-2">
               {/* Recebimentos */}
-              <Card>
+              <Card style={hGrafDocs}>
                 <CardHeader>
                   Recebimentos
                   <div className="card-header-actions">
@@ -685,6 +766,17 @@ class Dashboard extends Component {
                 </CardBody>
               </Card>
               {/* Documentos */}
+              <Card id="chartDocs">
+                <CardHeader>
+                  Documentos
+                </CardHeader>
+                <CardBody>
+                  <div className="chart-wrapper">
+                    <Bar data={bar} options={options} />
+                  </div>
+                </CardBody>
+              </Card>
+              {/*
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
@@ -692,18 +784,9 @@ class Dashboard extends Component {
                   </div>
                 </CardBody>
               </Card>
-
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
-                    <Bar data={bar} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    {/* <Pie data={pie} /> */}
                     <Line data={line} options={options} />
                   </div>
                 </CardBody>
@@ -711,12 +794,11 @@ class Dashboard extends Component {
               <Card>
                 <CardBody>
                   <div className="chart-wrapper">
-                    {/* <Pie data={pie} /> */}
                     <Doughnut data={doughnut} />
                   </div>
                 </CardBody>
               </Card>
-
+              */}
             </CardColumns>
           </Suspense>
         </div>
