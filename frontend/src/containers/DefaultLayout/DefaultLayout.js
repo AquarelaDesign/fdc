@@ -73,12 +73,19 @@ class DefaultLayout extends Component {
     this.props.history.push('/login')
   }
 
+  redireciona(e) {
+    e.preventDefault()
+    const input = e.target
+    const value = input.value
+    this.props.history.push(`/${value}`)
+  }
+
   render() {
     return (
       <div className="app">
         <AppHeader fixed>
           <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)}/>
+            <DefaultHeader onLogout={e=>this.signOut(e)} onRedirect={e=>this.redireciona(e)} />
           </Suspense>
         </AppHeader>
         <div className="app-body">

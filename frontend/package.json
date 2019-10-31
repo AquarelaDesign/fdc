@@ -26,6 +26,7 @@
     "eslint-plugin-react": "^7.16.0",
     "flag-icon-css": "^3.3.0",
     "font-awesome": "^4.7.0",
+    "history": "^4.10.1",
     "jquery": "^3.4.1",
     "local-ip-url": "^1.0.2",
     "node-sass": "^4.12.0",

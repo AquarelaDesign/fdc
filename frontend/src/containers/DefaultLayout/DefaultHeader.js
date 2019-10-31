@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+
 import { 
   Link,
   Badge,
@@ -39,9 +39,9 @@ class DefaultHeader extends Component {
   }
 
   acessa(e) {
-    e.preventDefault()
-    console.log('acessa', e.keyCode)
-    // this.setState({ path: e.nam })
+    if (e.keyCode == 13) {
+      this.props.onRedirect(e)
+    }
   }
 
   render() {
