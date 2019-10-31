@@ -29,6 +29,8 @@
     "history": "^4.10.1",
     "jquery": "^3.4.1",
     "local-ip-url": "^1.0.2",
+    "mdbootstrap": "^4.8.11",
+    "mdbreact": "^4.22.0",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
     "react": "^16.10.1",

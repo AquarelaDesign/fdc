@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 
 import { 
-  Link,
-  Badge,
   UncontrolledDropdown, 
   DropdownItem, 
   DropdownMenu, 
   DropdownToggle, 
   Nav, 
-  NavItem,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -39,7 +36,7 @@ class DefaultHeader extends Component {
   }
 
   acessa(e) {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       this.props.onRedirect(e)
     }
   }
