@@ -81,3 +81,10 @@ http://siare08.procyon.com.br:3125/cgi-bin/siarewebtt.pl/wficha
 &pdatini=01/10/2019
 &pdatfim=31/10/2019
 &psituac=TOD
+
+    "google-map-react": "^1.0.6",
+    "mdbreact": "^4.9.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.3"

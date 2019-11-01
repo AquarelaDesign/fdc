@@ -7,9 +7,15 @@ import {
   Form, FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText
 } from 'reactstrap'
 
-// import { MDBDataTable } from 'mdbreact'
+import { 
+  MDBDatePicker as DatePicker,
+  MDBDataTable 
+} from 'mdbreact'
 
 // import './styles.css'
+import { getEmail, dataInicial, dataFinal } from '../../../globais'
+
+const email = getEmail()
 
 class tfcmon extends Component {
   constructor(props) {
@@ -19,6 +25,8 @@ class tfcmon extends Component {
     this.state = {
       activeTab: new Array(4).fill('1'),
       tooltipOpen: [false, false],
+      dataInicial: dataInicial,
+      dataFinal: dataFinal,
     }
   }
 
@@ -57,6 +65,8 @@ class tfcmon extends Component {
   }
 
   render() {
+    const {dataInicial, dataFinal} = this.state
+
     return (
       <div className="animated fadeIn">
         <Card>
@@ -88,7 +98,12 @@ class tfcmon extends Component {
                       <Col xs="2">
                         <FormGroup>
                           <Label htmlFor="parMon-datini">Data Inicial</Label>
-                          <Input type="date" id="parMon-datini" placeholder="Data Inicial" />
+                          <Input 
+                            type="date" 
+                            id="parMon-datini" 
+                            placeholder="Data Inicial" 
+                            text={dataInicial}
+                          />
                           <Tooltip 
                             placement="right" 
                             isOpen={this.state.tooltipOpen[0]} 
@@ -103,7 +118,11 @@ class tfcmon extends Component {
                       <Col xs="2">
                         <FormGroup>
                           <Label htmlFor="parMon-datfim">Data Final</Label>
-                          <Input type="date" id="parMon-datfim" placeholder="Data Final" />
+                          <Input 
+                            type="date" 
+                            id="parMon-datfim" 
+                            placeholder="Data Final" 
+                          />
                           <Tooltip 
                             placement="right" 
                             isOpen={this.state.tooltipOpen[1]} 

@@ -38,7 +38,6 @@ const divNone = {
   display: 'none'
 }
 
-
 class Dashboard extends Component {
   _isMounted = false
 
@@ -61,9 +60,26 @@ class Dashboard extends Component {
         qtreal: 0
       }],
       ttfccpvl: [],
-      ttpagto: [],
+      ttpagto: [
+        {tippag: "CT", qtdtot: 0, despag: "CARTÃO", valor: 0.00, perc: 0.00},
+        {tippag: "OU", qtdtot: 0, despag: "OUTROS", valor: 0.00, perc: 0.00},
+        {tippag: "BO", qtdtot: 0, despag: "BOLETO", valor: 0.00, perc: 0.00},
+        {tippag: "DI", qtdtot: 0, despag: "DINHEIRO", valor: 0.00, perc: 0.00},
+        {tippag: "TR", qtdtot: 0, despag: "TRANSFERÊNCIA", valor: 0.00, perc: 0.00},
+        {tippag: "DE", qtdtot: 0, despag: "DESCONTO", valor: 0.00, perc: 0.00}
+      ],
       ttpec: [],
-      ttresumo: [],
+      ttresumo: [
+        {
+          "qtdtot": 0,
+          "vltotal": 0.0,
+          "tikmed": 0.0,
+          "vlserv": 0,
+          "perserv": 0.00,
+          "vlpec": 0.00,
+          "perpec": 0.00
+        }
+      ],
       ttretorno: [],
       ttserv: [],
       legendas: {},
@@ -148,84 +164,89 @@ class Dashboard extends Component {
             cores.orc = '#FF8C00'
             cores.val = '#00FF00'
             cores.geral = '#FFFFFF'
-    
-        ListaDocs.forEach((value, key) => {
-          const _tipo = value.TipoNF;
-    
-          if (value.Tipo === 'CAN' || value.Situacao === 'C') { // Cancelado
-            if (value.Tipo === 'VAL') {
-              totais.canval++
+
+        if (ListaDocs !== undefined) {
+          ListaDocs.forEach((value, key) => {
+            const _tipo = value.TipoNF;
+      
+            if (value.Tipo === 'CAN' || value.Situacao === 'C') { // Cancelado
+              if (value.Tipo === 'VAL') {
+                totais.canval++
+                totais.geral++
+              } else {
+                totais.cancel++
+                totais.geral++
+              }
+            } else if (value.Situacao === 'INU') {
+              totais.inu++
               totais.geral++
             } else {
-              totais.cancel++
-              totais.geral++
-            }
-          } else if (value.Situacao === 'INU') {
-            totais.inu++
-            totais.geral++
-          } else {
-            switch(value.Tipo) {
-              case '': 
-                if (_tipo === 'DEV') {
-                  if (value.Situacao === 'ERR') {
-                    totais.err++
-                  } else {
-                    totais.dev++                       
-                  }
-                  totais.geral++
-                } else if (_tipo === 'NFE') {
-                  totais.imp++
-                  totais.geral++
-                } else {
-                  totais.geral++
-                }
-                break
-              case 'PAS': 
-                if (_tipo === 'NFSE') {
-                  if (value.SerieNFSe === 'RP') {
-                    totais.rps++
+              switch(value.Tipo) {
+                case '': 
+                  if (_tipo === 'DEV') {
+                    if (value.Situacao === 'ERR') {
+                      totais.err++
+                    } else {
+                      totais.dev++                       
+                    }
+                    totais.geral++
+                  } else if (_tipo === 'NFE') {
+                    totais.imp++
                     totais.geral++
                   } else {
-                    totais.nfse++
                     totais.geral++
                   }
-                } else {
-                  totais.pas++
+                  break
+                case 'PAS': 
+                  if (_tipo === 'NFSE') {
+                    if (value.SerieNFSe === 'RP') {
+                      totais.rps++
+                      totais.geral++
+                    } else {
+                      totais.nfse++
+                      totais.geral++
+                    }
+                  } else {
+                    totais.pas++
+                    totais.geral++
+                  }
+                  break
+                case 'INU': 
+                  totais.inu++
                   totais.geral++
-                }
-                break
-              case 'INU': 
-                totais.inu++
-                totais.geral++
-                break
-              case 'ERR': 
-                totais.err++
-                totais.geral++
-                break
-              case 'DEV': 
-                totais.dev++
-                totais.geral++
-                break
-              case 'VAL': 
-                if (!value.chaNFe) {
+                  break
+                case 'ERR': 
                   totais.err++
                   totais.geral++
-                } else {
-                  totais.val++
+                  break
+                case 'DEV': 
+                  totais.dev++
                   totais.geral++
-                }
-                break
-              case 'ORC': 
-                totais.orc++
-                totais.geral++
-                break
-              default:  
-                totais.geral++
-                break
+                  break
+                case 'VAL': 
+                  if (!value.chaNFe) {
+                    totais.err++
+                    totais.geral++
+                  } else {
+                    totais.val++
+                    totais.geral++
+                  }
+                  break
+                case 'ORC': 
+                  totais.orc++
+                  totais.geral++
+                  break
+                default:  
+                  totais.geral++
+                  break
+              }
             }
-          }
-    
-        })
+      
+          })
+        } else {
+          // const grDocs = { data: totais, labels: legendas, cores }
+          // this.setState({ grDocs: grDocs })
+        }
 
         state.setState({ totais: totais, legendas: legendas, cores: cores })
         return totais
@@ -269,7 +290,10 @@ class Dashboard extends Component {
           }).then(response => {
             if (response.status === 200) {
               const { ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv, } = response.data.data
-              state.setState({ ttfccpvl, ttpagto, ttpec, ttresumo, ttretorno, ttserv })
+              state.setState({ ttfccpvl, ttpec, ttretorno, ttserv })
+              
+              if (ttpagto !== undefined) state.setState({ ttpagto })
+              if (ttresumo !== undefined) state.setState({ ttresumo })
             } else {
               buscaPas(state)
             }
@@ -433,8 +457,7 @@ class Dashboard extends Component {
       }
     }
 
-    const grDocs = { data, labels, cores: cor,
-    }
+    const grDocs = { data, labels, cores: cor }
     this.setState({ grDocs: grDocs })
 
 //    const height = document.getElementById('chartDocs').clientHeight
@@ -460,9 +483,7 @@ class Dashboard extends Component {
       totpag, totrec,
     } = this.state
 
-    // console.log('Contas', totpag, totrec, qtpag, qtrec)
-    
-    try {
+    // try {
       const Resetq = ttresetq[0]
       const Resumo = ttresumo[0]
       /*
@@ -753,7 +774,8 @@ class Dashboard extends Component {
                 </CardHeader>
                 <CardBody>
                   <ul>
-                    {ttpagto.map(pagto => (
+                    {
+                    ttpagto.map(pagto => (
                       <IndicadorBarra
                         key={pagto.tippag}
                         icon={Icones[pagto.tippag]}
@@ -761,7 +783,8 @@ class Dashboard extends Component {
                         value={ mostraValores ? pagto.valor.toString() : ''}
                         percent={pagto.perc.toString()}
                       />
-                    ))}
+                    ))
+                    }
                   </ul>
                 </CardBody>
               </Card>
@@ -803,12 +826,12 @@ class Dashboard extends Component {
           </Suspense>
         </div>
       )
-    } catch(e) {
-      // console.log('render', e)
-      return (
-        <></>
-      )
-    }
+    // } catch(e) {
+    //   // console.log('render', e)
+    //   return (
+    //     <></>
+    //   )
+    // }
 
   }
 }

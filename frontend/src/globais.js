@@ -13,5 +13,5 @@ export const dataInicial = moment().startOf('month').format('L');
 export const dataFinal   = moment().endOf('month').format('L');
 
 // Últimos 30 dias
-// const dataInicial = moment().subtract(30, 'days').format('L');
-// const dataFinal   = moment().format('L');
+// export const dataInicial = moment().subtract(30, 'days').format('L');
+// export const dataFinal   = moment().format('L');
