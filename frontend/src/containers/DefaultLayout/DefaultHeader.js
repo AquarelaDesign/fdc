@@ -24,14 +24,31 @@ const propTypes = {
 
 const defaultProps = {};
 
-const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
-const lgOficina = `http://fdc.procyon.com.br/wss/imagens/${oficina.e_mail}.jpg`
+// const oficina = JSON.parse(localStorage.getItem('@fdc/oficina'))
+// const lgOficina = `http://fdc.procyon.com.br/wss/imagens/${oficina.e_mail}.jpg`
 
 class DefaultHeader extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      oficina: {},
+      lgOficina: '',
       path: '',
+    }
+  }
+
+  componentDidMount() {
+    
+    async function getOficina() {
+      if (await localStorage.getItem('@fdc/oficina')) {
+        this.state.setState({
+          oficina: JSON.parse(localStorage.getItem('@fdc/oficina'))
+        })
+
+        this.state.setState({
+          lgOficina: `http://fdc.procyon.com.br/wss/imagens/${this.state.oficina.e_mail}.jpg`
+        })
+      }
     }
   }
 
@@ -80,10 +97,10 @@ class DefaultHeader extends Component {
 
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
-              <img src={lgOficina} className="img-avatar" alt={oficina.e_mail} />
+              <img src={this.state.lgOficina} className="img-avatar" alt={this.state.oficina.e_mail} />
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem>{oficina.e_mail}</DropdownItem>
+              <DropdownItem>{this.state.oficina.e_mail}</DropdownItem>
               <DropdownItem><i className="icon-settings"></i> Parâmetros da Oficina</DropdownItem>
               <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>

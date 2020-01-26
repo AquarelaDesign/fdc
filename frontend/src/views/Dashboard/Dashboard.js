@@ -324,7 +324,7 @@ class Dashboard extends Component {
             if (response.status === 200) {
               const { ttresumo } = response.data.data
               // state.setState({ resContas: ttresumo })
-              // console.table(ttresumo)
+              console.log(ttresumo)
               
               ttresumo.forEach((value, key) => {
                 state.setState({ 
