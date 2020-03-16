@@ -2,11 +2,16 @@ import axios from 'axios'
 import { getToken } from './auth'
 import { getEmail } from '../globais'
 
+const localIP = require('local-ip-url')
+
+const baseURL = localIP('public') === '127.0.0.1' ? localIP('public') : '168.194.69.79'
+const htprot = window.location.protocol !== 'https:' ? 'http' : 'https'
+const htport = window.location.protocol !== 'https:' ? 3003 : 3004
+
 const api = axios.create({
-  baseURL: 'http://168.194.69.79:3003',
+  baseURL: `${htprot}://${baseURL}:${htport}`,
   timeout: 5000,
 })
-
 
 api.interceptors.request.use(async config => {
   const token = getToken()
@@ -20,7 +25,6 @@ api.interceptors.request.use(async config => {
     codemp = oficina.codemp
   }
 
-  const localIP = require('local-ip-url')
   const wIP = localIP('public') === '127.0.0.1' ? '192.168.50.138' : localIP('public')
   
   if (token) {
@@ -33,6 +37,8 @@ api.interceptors.request.use(async config => {
     wip: wIP,
     wseqaba: 0,
   }
+  
+  console.log('config', config)
 
   return config
 })
